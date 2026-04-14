@@ -3,6 +3,10 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 type CertificateFields = {
+  studentName: string;
+  collegeName: string;
+  fromDate: string;
+  toDate: string;
   date: string;
   certificateTitle: string;
   projectTitle: string;
@@ -14,11 +18,18 @@ type CertificateFields = {
 };
 
 const defaultFields: CertificateFields = {
+  studentName: "Ms SRIJANNADEVI V M",
+  collegeName: "Rani Anna Government College for Women, Tirunelveli",
+  fromDate: "12th December 2025",
+  toDate: "30th March 2026",
   date: '30.03.2026',
   certificateTitle: 'ATTENDANCE CERTIFICATE',
   projectTitle: 'ENTERPRISE WORKFLOW AUTOMATION SYSTEM',
+
+  // ✅ CHANGE HERE
   certificateContent:
-    'This is to certify that Ms SRIJANNADEVI V M final year M.Sc Computer Science student of Rani Anna Government College for Women, Tirunelveli, has successfully attended the project work titled "ENTERPRISE WORKFLOW AUTOMATION SYSTEM" at Pavitha Consultancy Services from 12th December 2025 to 30th March 2026. During this period, the student was present and actively participated in all the scheduled sessions. She has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in her future career.',
+    'This is to certify that {{name}} final year M.Sc Computer Science student of {{college}} has successfully attended the project work titled "{{project}}" at Pavitha Consultancy Services from {{from}} to {{to}}. During this period, the student was present and actively participated in all the scheduled sessions. She has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in her future career.',
+
   signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
   attendanceTotalDays: '84 (exclude Sundays and other government holidays)',
   attendanceDaysAttended: '73',
@@ -31,13 +42,23 @@ const defaultPages: CertificateFields[] = [
     ...defaultFields,
     certificateTitle: 'PROJECT COMPLETION CERTIFICATE',
     certificateContent:
-      'This is to certify that Ms SRIJANNADEVI V M, final year M.Sc Computer Science student of Rani Anna Government college for Women, Tirunelveli, has successfully completed the project titled "ENTERPRISE WORKFLOW AUTOMATION SYSTEM" under the guidance of PCS Software Solutions from 12th December 2025 to 30th March 2026. During this period, the student was present and actively participated in all the scheduled sessions. We wish her the best in her future endeavours.',
-  },
+      `This is to certify that {{name}}, a student of {{college}} in M.Sc Computer Science, has successfully completed the project titled "{{project}}" under the guidance of PCS Software Solutions from {{from}} to {{to}}. We found her performance during this period to be satisfactory.
+
+We wish her all the best in her future endeavours.`
+  }
 ];
 
 const App: React.FC = () => {
   const [pagesData, setPagesData] = useState<CertificateFields[]>(defaultPages);
   const pageRefs = useRef<Array<HTMLElement | null>>([]);
+  const parseContent = (content: string, page: CertificateFields) => {
+    return content
+      .replace(/{{name}}/g, `<strong>${page.studentName}</strong>`)
+      .replace(/{{college}}/g, `<strong>${page.collegeName}</strong>`)
+      .replace(/{{from}}/g, `<strong>${page.fromDate}</strong>`)
+      .replace(/{{to}}/g, `<strong>${page.toDate}</strong>`)
+      .replace(/{{project}}/g, `<strong>${page.projectTitle}</strong>`);
+  };
   const setPageRef = (index: number) => (element: HTMLElement | null) => {
     pageRefs.current[index] = element;
   };
@@ -90,6 +111,7 @@ const App: React.FC = () => {
       <div className="mx-auto max-w-[1400px]">
         <div className="grid gap-8 lg:grid-cols-[350px_1fr]">
           {/* Form Inputs */}
+
           <form className="space-y-6 rounded-lg border border-slate-300 bg-white p-6 shadow h-fit">
             {pagesData.map((page, index) => (
               <div key={index} className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -97,12 +119,55 @@ const App: React.FC = () => {
                   Certificate {index + 1} Inputs
                 </h3>
                 <div>
+                  <label className="block text-xs font-semibold text-slate-700">
+                    Student Name
+                  </label>
+                  <input
+                    value={page.studentName}
+                    onChange={(e) => handleChange(index, 'studentName', e.target.value)}
+                    className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-xs"
+                    placeholder="Enter Student Name"
+                  />
+                </div>
+                <div>
                   <label className="block text-xs font-semibold text-slate-700">Date</label>
                   <input
                     value={page.date}
                     onChange={(e) => handleChange(index, 'date', e.target.value)}
                     className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-xs"
                     placeholder="Date"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700">
+                    College Name
+                  </label>
+                  <input
+                    value={page.collegeName}
+                    onChange={(e) => handleChange(index, 'collegeName', e.target.value)}
+                    className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700">
+                    From Date
+                  </label>
+                  <input
+                    value={page.fromDate}
+                    onChange={(e) => handleChange(index, 'fromDate', e.target.value)}
+                    className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700">
+                    To Date
+                  </label>
+                  <input
+                    value={page.toDate}
+                    onChange={(e) => handleChange(index, 'toDate', e.target.value)}
+                    className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-xs"
                   />
                 </div>
                 <div>
@@ -183,55 +248,66 @@ const App: React.FC = () => {
             </button>
           </form>
 
+
           {/* Certificate Preview */}
           <div className="flex flex-col items-center gap-8 lg:flex-row lg:justify-center">
             {pagesData.map((page, index) => (
               <section
                 key={index}
                 ref={setPageRef(index)}
-                className="border border-slate-200 shadow-lg overflow-hidden"
+                className="border border-slate-200 shadow-lg overflow-hidden bg-white"
                 style={{
-                  width: '620px',
-                  height: '880px',
+                  width: '794px',
+                  height: '1123px',
                   backgroundImage: "url('/images/bg.png')",
                   backgroundSize: '100% 100%',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',
                   position: 'relative',
+                  fontFamily: "'Times New Roman', serif",
+                  padding: '160px 80px 80px 80px' // Top padding-ai increase panniruken header image-kaga
                 }}
               >
-                <div className="absolute right-12 top-[112px] text-right text-[11px] font-medium text-slate-900">
+                {/* Date - Now Relative to follow the header image flow */}
+                <div className="text-right text-[14px] font-bold text-black mb-4">
                   {page.date}
                 </div>
 
-                <div className="absolute left-0 right-0 top-[152px] text-center">
-                  <h2 className="text-[14px] font-bold tracking-[0.3em] text-slate-900 border-b border-black inline-block pb-1 uppercase">
+                {/* Title - Centered & Underlined */}
+                <div className="mt-10 text-center mb-10">
+                  <h2 className="text-[18px] font-bold border-b-2 border-black inline-block pb-1 uppercase">
                     {page.certificateTitle}
                   </h2>
                 </div>
 
-                <div className="absolute left-0 right-0 top-[192px] text-center px-20">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.55em] text-slate-700">
-                    {page.projectTitle}
-                  </p>
-                </div>
+                {/* Main Content - Justified */}
+                <div
+                  className="text-[15px] leading-[1.8] text-justify text-black mb-6 whitespace-pre-line"
+                  dangerouslySetInnerHTML={{
+                    __html: parseContent(page.certificateContent, page),
+                  }}
+                />
 
-                <div className="absolute left-24 right-24 top-[240px] bottom-[310px] overflow-y-auto text-left text-[11px] leading-[1.9] text-slate-900 whitespace-pre-wrap" style={{ textAlign: 'left' }}>
-                  {page.certificateContent}
-                </div>
+                {/* Attendance Details Section */}
                 {page.certificateTitle === 'ATTENDANCE CERTIFICATE' && (
-                  <div className="absolute left-24 right-24 top-[510px] text-left text-[11px] leading-[1.9] text-slate-900">
-                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.15em]">
+                  <div className="mt-10 text-[15px] leading-[1.8] text-black">
+                    <p className="mb-4 font-bold underline uppercase">
                       Attendance Details
                     </p>
-                    <p className="mb-1">Total No. of Days Allotted: {page.attendanceTotalDays}</p>
-                    <p className="mb-1">No. of Days Attended: {page.attendanceDaysAttended}</p>
-                    <p>Percentage of Attendance: {page.attendancePercentage}</p>
+                    <div className="space-y-2">
+                      <p><span className="font-bold">Total No. of Days Allotted:</span> {page.attendanceTotalDays}</p>
+                      <p><span className="font-bold">No. of Days Attended:</span> {page.attendanceDaysAttended}</p>
+                      <p><span className="font-bold">Percentage of Attendance:</span> {page.attendancePercentage}</p>
+                    </div>
                   </div>
                 )}
 
-                <div className="absolute right-16 bottom-[110px] text-right text-[11px] font-semibold text-slate-900">
-                  {page.signatoryTitle}
+                {/* Signature Section */}
+                <div className="absolute right-16 bottom-70 text-right">
+                  <div className="mb-4 h-12"></div>
+                  <p className="text-[14px] font-bold uppercase">
+                    {page.signatoryTitle}
+                  </p>
                 </div>
               </section>
             ))}
