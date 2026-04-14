@@ -28,7 +28,7 @@ const defaultFields: CertificateFields = {
 
   // ✅ CHANGE HERE
   certificateContent:
-      'This is to certify that {{name}} final year M.Sc Computer Science student of {{college}} has successfully attended the project work titled "{{project}}" at Pavitha Consultancy Services from {{from}} to {{to}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
+      'This is to certify that {{studentName}} final year M.Sc Computer Science student of {{collegeName}} has successfully attended the project work titled "{{projectTitle}}" at Pavitha Consultancy Services from {{fromDate}} to {{toDate}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
   
 
   signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
@@ -43,7 +43,7 @@ const defaultPages: CertificateFields[] = [
     ...defaultFields,
     certificateTitle: 'PROJECT COMPLETION CERTIFICATE',
    certificateContent:
-      `This is to certify that {{name}}, a student of {{college}} in M.Sc Computer Science, has successfully completed the project titled "{{project}}" under the guidance of PCS Software Solutions from {{from}} to {{to}}. The performance during this period was found to be satisfactory.
+      `This is to certify that {{studentName}}, a student of {{collegeName}} in M.Sc Computer Science, has successfully completed the project titled "{{projectTitle}}" under the guidance of PCS Software Solutions from {{fromDate}} to {{toDate}}. The performance during this period was found to be satisfactory.
 
 We wish the student all the best in all future endeavours.`
   }
@@ -54,11 +54,11 @@ const App: React.FC = () => {
   const pageRefs = useRef<Array<HTMLElement | null>>([]);
   const parseContent = (content: string, page: CertificateFields) => {
     return content
-      .replace(/{{name}}/g, `<strong>${page.studentName}</strong>`)
-      .replace(/{{college}}/g, `<strong>${page.collegeName}</strong>`)
-      .replace(/{{from}}/g, `<strong>${page.fromDate}</strong>`)
-      .replace(/{{to}}/g, `<strong>${page.toDate}</strong>`)
-      .replace(/{{project}}/g, `<strong>${page.projectTitle}</strong>`);
+      .replace(/{{student Name}}/g, `<strong>${page.studentName}</strong>`)
+      .replace(/{{college Name}}/g, `<strong>${page.collegeName}</strong>`)
+      .replace(/{{from Date}}/g, `<strong>${page.fromDate}</strong>`)
+      .replace(/{{to Date}}/g, `<strong>${page.toDate}</strong>`)
+      .replace(/{{project Title}}/g, `<strong>${page.projectTitle}</strong>`);
   };
   const setPageRef = (index: number) => (element: HTMLElement | null) => {
     pageRefs.current[index] = element;
