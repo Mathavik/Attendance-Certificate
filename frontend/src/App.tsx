@@ -28,7 +28,8 @@ const defaultFields: CertificateFields = {
 
   // ✅ CHANGE HERE
   certificateContent:
-    'This is to certify that {{name}} final year M.Sc Computer Science student of {{college}} has successfully attended the project work titled "{{project}}" at Pavitha Consultancy Services from {{from}} to {{to}}. During this period, the student was present and actively participated in all the scheduled sessions. She has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in her future career.',
+      'This is to certify that {{name}} final year M.Sc Computer Science student of {{college}} has successfully attended the project work titled "{{project}}" at Pavitha Consultancy Services from {{from}} to {{to}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
+  
 
   signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
   attendanceTotalDays: '84 (exclude Sundays and other government holidays)',
@@ -41,10 +42,10 @@ const defaultPages: CertificateFields[] = [
   {
     ...defaultFields,
     certificateTitle: 'PROJECT COMPLETION CERTIFICATE',
-    certificateContent:
-      `This is to certify that {{name}}, a student of {{college}} in M.Sc Computer Science, has successfully completed the project titled "{{project}}" under the guidance of PCS Software Solutions from {{from}} to {{to}}. We found her performance during this period to be satisfactory.
+   certificateContent:
+      `This is to certify that {{name}}, a student of {{college}} in M.Sc Computer Science, has successfully completed the project titled "{{project}}" under the guidance of PCS Software Solutions from {{from}} to {{to}}. The performance during this period was found to be satisfactory.
 
-We wish her all the best in her future endeavours.`
+We wish the student all the best in all future endeavours.`
   }
 ];
 
