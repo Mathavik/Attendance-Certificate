@@ -28,7 +28,7 @@ const defaultFields: CertificateFields = {
 
   // ✅ CHANGE HERE
   certificateContent:
-      'This is to certify that {{studentName}} final year M.Sc Computer Science student of {{collegeName}} has successfully attended the project work titled "{{projectTitle}}" at Pavitha Consultancy Services from {{fromDate}} to {{toDate}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
+      'This is to certify that {{student Name}} final year M.Sc Computer Science student of {{college Name}} has successfully attended the project work titled "{{project Title}}" at Pavitha Consultancy Services from {{from Date}} to {{to Date}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
   
 
   signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
@@ -43,7 +43,7 @@ const defaultPages: CertificateFields[] = [
     ...defaultFields,
     certificateTitle: 'PROJECT COMPLETION CERTIFICATE',
    certificateContent:
-      `This is to certify that {{studentName}}, a student of {{collegeName}} in M.Sc Computer Science, has successfully completed the project titled "{{projectTitle}}" under the guidance of PCS Software Solutions from {{fromDate}} to {{toDate}}. The performance during this period was found to be satisfactory.
+      `This is to certify that {{student Name}}, a student of {{college Name}} in M.Sc Computer Science, has successfully completed the project titled "{{project Title}}" under the guidance of PCS Software Solutions from {{from Date}} to {{to Date}}. The performance during this period was found to be satisfactory.
 
 We wish the student all the best in all future endeavours.`
   }
