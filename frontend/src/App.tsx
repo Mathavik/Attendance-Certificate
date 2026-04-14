@@ -8,15 +8,21 @@ type CertificateFields = {
   projectTitle: string;
   certificateContent: string;
   signatoryTitle: string;
+  attendanceTotalDays: string;
+  attendanceDaysAttended: string;
+  attendancePercentage: string;
 };
 
 const defaultFields: CertificateFields = {
-  date: '31.03.2026',
+  date: '30.03.2026',
   certificateTitle: 'ATTENDANCE CERTIFICATE',
   projectTitle: 'ENTERPRISE WORKFLOW AUTOMATION SYSTEM',
   certificateContent:
-    'This is to certify that SRIJANNADEVI a student of Rani Anna Government college for Women in M.Sc Computer Science (Reg No: 2408117610391211) has successfully completed the project titled " ENTERPRISE WORKFLOW AUTOMATION SYSTEM " under the guidance of PCS Software Solutions from December 12th 2025 to March 30th 2026. We found her performance during this period has been satisfactory.\n\nWe wish all the best in her future endeavours.',
-  signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT.LTD.',
+    'This is to certify that Ms SRIJANNADEVI V M final year M.Sc Computer Science student of Rani Anna Government College for Women, Tirunelveli, has successfully attended the project work titled "ENTERPRISE WORKFLOW AUTOMATION SYSTEM" at Pavitha Consultancy Services from 12th December 2025 to 30th March 2026. During this period, the student was present and actively participated in all the scheduled sessions. She has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in her future career.',
+  signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
+  attendanceTotalDays: '84 (exclude Sundays and other government holidays)',
+  attendanceDaysAttended: '73',
+  attendancePercentage: '87%',
 };
 
 const defaultPages: CertificateFields[] = [
@@ -126,6 +132,37 @@ const App: React.FC = () => {
                     placeholder="Certificate Content"
                   />
                 </div>
+                {page.certificateTitle === 'ATTENDANCE CERTIFICATE' && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700">Total No. of Days Allotted</label>
+                      <input
+                        value={page.attendanceTotalDays}
+                        onChange={(e) => handleChange(index, 'attendanceTotalDays', e.target.value)}
+                        className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-xs"
+                        placeholder="Total No. of Days Allotted"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700">No. of Days Attended</label>
+                      <input
+                        value={page.attendanceDaysAttended}
+                        onChange={(e) => handleChange(index, 'attendanceDaysAttended', e.target.value)}
+                        className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-xs"
+                        placeholder="No. of Days Attended"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700">Percentage of Attendance</label>
+                      <input
+                        value={page.attendancePercentage}
+                        onChange={(e) => handleChange(index, 'attendancePercentage', e.target.value)}
+                        className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-xs"
+                        placeholder="Percentage of Attendance"
+                      />
+                    </div>
+                  </>
+                )}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700">Signatory Title</label>
                   <input
@@ -179,9 +216,19 @@ const App: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="absolute left-20 right-20 top-[240px] bottom-[180px] overflow-y-auto text-left text-[11px] leading-[1.9] text-slate-900 whitespace-pre-wrap">
+                <div className="absolute left-24 right-24 top-[240px] bottom-[310px] overflow-y-auto text-left text-[11px] leading-[1.9] text-slate-900 whitespace-pre-wrap" style={{ textAlign: 'left' }}>
                   {page.certificateContent}
                 </div>
+                {page.certificateTitle === 'ATTENDANCE CERTIFICATE' && (
+                  <div className="absolute left-24 right-24 top-[510px] text-left text-[11px] leading-[1.9] text-slate-900">
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.15em]">
+                      Attendance Details
+                    </p>
+                    <p className="mb-1">Total No. of Days Allotted: {page.attendanceTotalDays}</p>
+                    <p className="mb-1">No. of Days Attended: {page.attendanceDaysAttended}</p>
+                    <p>Percentage of Attendance: {page.attendancePercentage}</p>
+                  </div>
+                )}
 
                 <div className="absolute right-16 bottom-[110px] text-right text-[11px] font-semibold text-slate-900">
                   {page.signatoryTitle}
