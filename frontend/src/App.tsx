@@ -209,16 +209,42 @@ const App: React.FC = () => {
                           className="mt-1 w-full text-sm"
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div>
-                          <label className="block text-[10px] font-bold text-slate-500 uppercase">Date</label>
-                          <input value={page.date} onChange={(e) => handleChange(index, 'date', e.target.value)} className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm" />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] font-bold text-slate-500 uppercase">From Date</label>
-                          <input value={page.fromDate} onChange={(e) => handleChange(index, 'fromDate', e.target.value)} className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm" />
-                        </div>
-                      </div>
+                    <div className="grid grid-cols-3 gap-2">
+  
+  <div>
+    <label className="block text-[10px] font-bold text-slate-500 uppercase">
+      Date
+    </label>
+    <input
+      value={page.date}
+      onChange={(e) => handleChange(index, 'date', e.target.value)}
+      className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+    />
+  </div>
+
+  <div>
+    <label className="block text-[10px] font-bold text-slate-500 uppercase">
+      From Date
+    </label>
+    <input
+      value={page.fromDate}
+      onChange={(e) => handleChange(index, 'fromDate', e.target.value)}
+      className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+    />
+  </div>
+
+  <div>
+    <label className="block text-[10px] font-bold text-slate-500 uppercase">
+      To Date
+    </label>
+    <input
+      value={page.toDate}
+      onChange={(e) => handleChange(index, 'toDate', e.target.value)}
+      className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+    />
+  </div>
+
+</div>
 
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase">College Name</label>
