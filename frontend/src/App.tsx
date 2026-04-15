@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
 type CertificateFields = {
   studentName: string;
   collegeName: string;
@@ -35,7 +34,7 @@ const defaultFields: CertificateFields = {
   attendanceTotalDays: '84 (exclude Sundays and other government holidays)',
   attendanceDaysAttended: '73',
   attendancePercentage: '87%',
-  signatureImage: "",
+ signatureImage: "/images/signature.png",
   wishMessage: "We wish every success in her future career."
 };
 
@@ -96,6 +95,37 @@ const App: React.FC = () => {
     );
   };
 
+
+  const downloadBothPDF = async () => {
+  const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  for (let i = 0; i < pageRefs.current.length; i++) {
+    const page = pageRefs.current[i];
+    if (!page) continue;
+
+    const canvas = await html2canvas(page, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 210;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    if (i !== 0) {
+      pdf.addPage(); // next page
+    }
+
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+  }
+
+  pdf.save(`Certificates_${pagesData[0].studentName}.pdf`);
+};
   const downloadSinglePDF = async (index: number) => {
     const page = pageRefs.current[index];
     if (!page) return;
@@ -233,9 +263,9 @@ const App: React.FC = () => {
                 ))}
               </div>
 
-              {/* <button type="button" onClick={downloadPDF} className="w-full rounded-lg bg-blue-900 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-lg">
+              <button type="button" onClick={downloadBothPDF} className="w-full rounded-lg bg-blue-900 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-lg">
                 DOWNLOAD PDF (BOTH PAGES)
-              </button> */}
+              </button>
             </form>
           </div>
 
@@ -314,14 +344,14 @@ const App: React.FC = () => {
 
   {/* 4. Signature Section - Fixed gap from content */}
   {/* Neenga content koraika koraika, intha section auto-va mela yerum */}
-  <div className="mt-16 flex flex-col items-end"> 
-    <div className="text-right pr-4">
+<div className="mt-16 flex flex-col items-end">
+  <div className="pr-4 text-center">
       {page.signatureImage && (
-        <img
-          src={page.signatureImage}
-          alt="signature"
-          className="w-32 h-auto mb-2 ml-auto" 
-        />
+       <img
+  src={page.signatureImage}
+  alt="signature"
+  className="w-32 h-auto mb-2 mx-auto"
+/>
       )}
       <p className="text-[15px] font-bold uppercase">
         {page.signatoryTitle}
