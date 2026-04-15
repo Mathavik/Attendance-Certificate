@@ -247,9 +247,13 @@ const App: React.FC = () => {
                   )}
 
                   {/* Signatory */}
-<div className="absolute right-16 bottom-48 text-right">
+<div
+  className={`absolute right-16 ${
+    index === 1 ? "bottom-104" : "bottom-48"
+  } text-right`}
+>
   
-  {/* Signature Image - centered above title */}
+  {/* Signature Image */}
   {page.signatureImage && (
     <img
       src={page.signatureImage}
@@ -258,7 +262,7 @@ const App: React.FC = () => {
     />
   )}
 
-  {/* Title (unchanged) */}
+  {/* Title */}
   <p className="text-[15px] font-bold uppercase">
     {page.signatoryTitle}
   </p>
