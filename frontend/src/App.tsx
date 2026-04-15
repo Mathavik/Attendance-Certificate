@@ -38,12 +38,14 @@ const defaultFields: CertificateFields = {
 };
 
 const defaultPages: CertificateFields[] = [
-  { ...defaultFields },
+  {
+    ...defaultFields,
+    certificateTitle: 'ATTENDANCE CERTIFICATE',
+  },
   {
     ...defaultFields,
     certificateTitle: 'PROJECT COMPLETION CERTIFICATE',
-    certificateContent:
-      `This is to certify that {{student Name}}, a student of {{college Name}} in M.Sc Computer Science, has successfully completed the project titled "{{project Title}}" under the guidance of PCS Software Solutions from {{from Date}} to {{to Date}}. The performance during this period was found to be satisfactory.
+    certificateContent: `This is to certify that {{student Name}}, a student of {{college Name}} in M.Sc Computer Science, has successfully completed the project titled "{{project Title}}" under the guidance of PCS Software Solutions from {{from Date}} to {{to Date}}. The performance during this period was found to be satisfactory.
 
 We wish the student all the best in all future endeavours.`
   }
@@ -120,6 +122,16 @@ const App: React.FC = () => {
                     <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
                       Certificate {index + 1} ({page.certificateTitle.split(' ')[0]})
                     </h3>
+                    <div>
+  <label className="block text-[10px] font-bold text-slate-500 uppercase">
+    Certificate Title
+  </label>
+  <input
+    value={page.certificateTitle}
+    onChange={(e) => handleChange(index, 'certificateTitle', e.target.value)}
+    className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+  />
+</div>
 
                     <div className="grid gap-3">
                       <div>
