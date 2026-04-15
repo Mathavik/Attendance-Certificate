@@ -27,8 +27,8 @@ const defaultFields: CertificateFields = {
   certificateTitle: 'ATTENDANCE CERTIFICATE',
   projectTitle: 'ENTERPRISE WORKFLOW AUTOMATION SYSTEM',
   certificateContent:
-      'This is to certify that {{student Name}} final year M.Sc Computer Science student of {{college Name}} has successfully attended the project work titled "{{project Title}}" at Pavitha Consultancy Services from {{from Date}} to {{to Date}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
-  
+    'This is to certify that {{student Name}} final year M.Sc Computer Science student of {{college Name}} has successfully attended the project work titled "{{project Title}}" at Pavitha Consultancy Services from {{from Date}} to {{to Date}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
+
 
   signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
   attendanceTotalDays: '84 (exclude Sundays and other government holidays)',
@@ -42,7 +42,7 @@ const defaultPages: CertificateFields[] = [
   {
     ...defaultFields,
     certificateTitle: 'PROJECT COMPLETION CERTIFICATE',
-   certificateContent:
+    certificateContent:
       `This is to certify that {{student Name}}, a student of {{college Name}} in M.Sc Computer Science, has successfully completed the project titled "{{project Title}}" under the guidance of PCS Software Solutions from {{from Date}} to {{to Date}}. The performance during this period was found to be satisfactory.
 
 We wish the student all the best in all future endeavours.`
@@ -74,9 +74,9 @@ const App: React.FC = () => {
     );
   };
 
-  const downloadPDF = async () => {
-    const pages = pageRefs.current.filter(Boolean) as HTMLDivElement[];
-    if (pages.length === 0) return;
+  const downloadSinglePDF = async (index: number) => {
+    const page = pageRefs.current[index];
+    if (!page) return;
 
     try {
       const pdf = new jsPDF({
@@ -85,70 +85,68 @@ const App: React.FC = () => {
         format: 'a4',
       });
 
-      for (let index = 0; index < pages.length; index++) {
-        const page = pages[index];
-        const canvas = await html2canvas(page, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-        });
+      const canvas = await html2canvas(page, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+      });
 
-        const imgData = canvas.toDataURL('image/png');
-        const imgWidth = 210;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        if (index > 0) pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      }
-      pdf.save(`Certificates_${pagesData[0].studentName}.pdf`);
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+      pdf.save(
+        `${pagesData[index].certificateTitle}_${pagesData[index].studentName}.pdf`
+      );
     } catch (error) {
       console.error('Error generating PDF:', error);
     }
   };
-
   return (
     <div className="min-h-screen bg-slate-100 px-4 py-10">
       <div className="mx-auto max-w-[1400px]">
         <div className="grid gap-8 lg:grid-cols-[400px_1fr]">
-          
+
           {/* Left Side: Input Form (Sticky to keep it visible while scrolling) */}
           <div className="h-fit lg:sticky lg:top-10">
             <form className="space-y-6 rounded-lg border border-slate-300 bg-white p-6 shadow-md">
               <h2 className="text-xl font-bold text-blue-900 border-b pb-2">Certificate Editor</h2>
-              
+
               <div className="max-h-[70vh] overflow-y-auto pr-2 space-y-8">
                 {pagesData.map((page, index) => (
                   <div key={index} className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
                     <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
                       Certificate {index + 1} ({page.certificateTitle.split(' ')[0]})
                     </h3>
-                    
+
                     <div className="grid gap-3">
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase">Student Name</label>
                         <input value={page.studentName} onChange={(e) => handleChange(index, 'studentName', e.target.value)} className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
                       </div>
 
-<div>
-  <label className="block text-[10px] font-bold text-slate-500 uppercase">
-    Signature Image
-  </label>
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          handleChange(index, 'signatureImage', reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      }
-    }}
-    className="mt-1 w-full text-sm"
-  />
-</div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase">
+                          Signature Image
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onload = () => {
+                                handleChange(index, 'signatureImage', reader.result as string);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                          className="mt-1 w-full text-sm"
+                        />
+                      </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="block text-[10px] font-bold text-slate-500 uppercase">Date</label>
@@ -188,9 +186,9 @@ const App: React.FC = () => {
                 ))}
               </div>
 
-              <button type="button" onClick={downloadPDF} className="w-full rounded-lg bg-blue-900 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-lg">
+              {/* <button type="button" onClick={downloadPDF} className="w-full rounded-lg bg-blue-900 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-lg">
                 DOWNLOAD PDF (BOTH PAGES)
-              </button>
+              </button> */}
             </form>
           </div>
 
@@ -198,6 +196,15 @@ const App: React.FC = () => {
           <div className="flex flex-col items-center gap-12 pb-20">
             {pagesData.map((page, index) => (
               <div key={index} className="flex flex-col items-center gap-2">
+                <div className="w-full flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => downloadSinglePDF(index)}
+                    className="rounded-lg bg-blue-900 px-6 py-3 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-lg"
+                  >
+                    DOWNLOAD {page.certificateTitle}
+                  </button>
+                </div>
                 <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">PAGE {index + 1} PREVIEW</span>
                 <section
                   ref={setPageRef(index)}
@@ -212,6 +219,7 @@ const App: React.FC = () => {
                     padding: '180px 90px 80px 90px'
                   }}
                 >
+
                   {/* Date */}
                   <div className="text-right text-[16px] font-bold text-black mb-6">
                     {page.date}
@@ -247,27 +255,26 @@ const App: React.FC = () => {
                   )}
 
                   {/* Signatory */}
-<div
-  className={`absolute right-16 ${
-    index === 1 ? "bottom-104" : "bottom-48"
-  } text-right`}
->
-  
-  {/* Signature Image */}
-  {page.signatureImage && (
-    <img
-      src={page.signatureImage}
-      alt="signature"
-      className="w-32 h-auto mb-2 mx-auto"
-    />
-  )}
+                  <div
+                    className={`absolute right-16 ${index === 1 ? "bottom-104" : "bottom-48"
+                      } text-right`}
+                  >
 
-  {/* Title */}
-  <p className="text-[15px] font-bold uppercase">
-    {page.signatoryTitle}
-  </p>
+                    {/* Signature Image */}
+                    {page.signatureImage && (
+                      <img
+                        src={page.signatureImage}
+                        alt="signature"
+                        className="w-32 h-auto mb-2 mx-auto"
+                      />
+                    )}
 
-</div>
+                    {/* Title */}
+                    <p className="text-[15px] font-bold uppercase">
+                      {page.signatoryTitle}
+                    </p>
+
+                  </div>
                 </section>
               </div>
             ))}
