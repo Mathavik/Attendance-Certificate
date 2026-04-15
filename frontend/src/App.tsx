@@ -15,6 +15,7 @@ type CertificateFields = {
   attendanceTotalDays: string;
   attendanceDaysAttended: string;
   attendancePercentage: string;
+  signatureImage: string;
 };
 
 const defaultFields: CertificateFields = {
@@ -26,11 +27,14 @@ const defaultFields: CertificateFields = {
   certificateTitle: 'ATTENDANCE CERTIFICATE',
   projectTitle: 'ENTERPRISE WORKFLOW AUTOMATION SYSTEM',
   certificateContent:
-    'This is to certify that {{studentName}} final year M.Sc Computer Science student of {{collegeName}} has successfully attended the project work titled "{{projectTitle}}" at Pavitha Consultancy Services from {{fromDate}} to {{toDate}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
+      'This is to certify that {{student Name}} final year M.Sc Computer Science student of {{college Name}} has successfully attended the project work titled "{{project Title}}" at Pavitha Consultancy Services from {{from Date}} to {{to Date}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
+  
+
   signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
   attendanceTotalDays: '84 (exclude Sundays and other government holidays)',
   attendanceDaysAttended: '73',
   attendancePercentage: '87%',
+  signatureImage: "",
 };
 
 const defaultPages: CertificateFields[] = [
@@ -38,8 +42,10 @@ const defaultPages: CertificateFields[] = [
   {
     ...defaultFields,
     certificateTitle: 'PROJECT COMPLETION CERTIFICATE',
-    certificateContent:
-      `This is to certify that {{studentName}}, a student of {{collegeName}} in M.Sc Computer Science, has successfully completed the project titled "{{projectTitle}}" under the guidance of PCS Software Solutions from {{fromDate}} to {{toDate}}. The performance during this period was found to be satisfactory.\n\nWe wish the student all the best in all future endeavours.`
+   certificateContent:
+      `This is to certify that {{student Name}}, a student of {{college Name}} in M.Sc Computer Science, has successfully completed the project titled "{{project Title}}" under the guidance of PCS Software Solutions from {{from Date}} to {{to Date}}. The performance during this period was found to be satisfactory.
+
+We wish the student all the best in all future endeavours.`
   }
 ];
 
@@ -49,11 +55,11 @@ const App: React.FC = () => {
 
   const parseContent = (content: string, page: CertificateFields) => {
     return content
-      .replace(/{{studentName}}/g, `<strong>${page.studentName}</strong>`)
-      .replace(/{{collegeName}}/g, `<strong>${page.collegeName}</strong>`)
-      .replace(/{{fromDate}}/g, `<strong>${page.fromDate}</strong>`)
-      .replace(/{{toDate}}/g, `<strong>${page.toDate}</strong>`)
-      .replace(/{{projectTitle}}/g, `<strong>${page.projectTitle}</strong>`);
+      .replace(/{{student Name}}/g, `<strong>${page.studentName}</strong>`)
+      .replace(/{{college Name}}/g, `<strong>${page.collegeName}</strong>`)
+      .replace(/{{from Date}}/g, `<strong>${page.fromDate}</strong>`)
+      .replace(/{{to Date}}/g, `<strong>${page.toDate}</strong>`)
+      .replace(/{{project Title}}/g, `<strong>${page.projectTitle}</strong>`);
   };
 
   const setPageRef = (index: number) => (element: HTMLElement | null) => {
@@ -123,6 +129,26 @@ const App: React.FC = () => {
                         <input value={page.studentName} onChange={(e) => handleChange(index, 'studentName', e.target.value)} className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
                       </div>
 
+<div>
+  <label className="block text-[10px] font-bold text-slate-500 uppercase">
+    Signature Image
+  </label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          handleChange(index, 'signatureImage', reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    }}
+    className="mt-1 w-full text-sm"
+  />
+</div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="block text-[10px] font-bold text-slate-500 uppercase">Date</label>
@@ -221,12 +247,23 @@ const App: React.FC = () => {
                   )}
 
                   {/* Signatory */}
-                  <div className="absolute right-16 bottom-36 text-right">
-                    <div className="h-16"></div> {/* Space for digital signature if needed */}
-                    <p className="text-[15px] font-bold uppercase">
-                      {page.signatoryTitle}
-                    </p>
-                  </div>
+<div className="absolute right-16 bottom-48 text-right">
+  
+  {/* Signature Image - centered above title */}
+  {page.signatureImage && (
+    <img
+      src={page.signatureImage}
+      alt="signature"
+      className="w-32 h-auto mb-2 mx-auto"
+    />
+  )}
+
+  {/* Title (unchanged) */}
+  <p className="text-[15px] font-bold uppercase">
+    {page.signatoryTitle}
+  </p>
+
+</div>
                 </section>
               </div>
             ))}
