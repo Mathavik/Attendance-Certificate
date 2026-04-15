@@ -70,9 +70,29 @@ const App: React.FC = () => {
 
   const handleChange = (index: number, key: keyof CertificateFields, value: string) => {
     setPagesData((current) =>
-      current.map((page, pageIndex) =>
-        pageIndex === index ? { ...page, [key]: value } : page,
-      ),
+      current.map((page, pageIndex) => {
+        if (pageIndex !== index) return page;
+
+        let updatedPage = { ...page, [key]: value };
+
+        // ✅ AUTO CALCULATION LOGIC
+        if (
+          key === 'attendanceTotalDays' ||
+          key === 'attendanceDaysAttended'
+        ) {
+          const total = parseInt(updatedPage.attendanceTotalDays);
+          const attended = parseInt(updatedPage.attendanceDaysAttended);
+
+          if (!isNaN(total) && !isNaN(attended) && total > 0) {
+            const percentage = ((attended / total) * 100).toFixed(0);
+            updatedPage.attendancePercentage = `${percentage}%`;
+          } else {
+            updatedPage.attendancePercentage = '';
+          }
+        }
+
+        return updatedPage;
+      })
     );
   };
 
@@ -123,15 +143,15 @@ const App: React.FC = () => {
                       Certificate {index + 1} ({page.certificateTitle.split(' ')[0]})
                     </h3>
                     <div>
-  <label className="block text-[10px] font-bold text-slate-500 uppercase">
-    Certificate Title
-  </label>
-  <input
-    value={page.certificateTitle}
-    onChange={(e) => handleChange(index, 'certificateTitle', e.target.value)}
-    className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
-  />
-</div>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">
+                        Certificate Title
+                      </label>
+                      <input
+                        value={page.certificateTitle}
+                        onChange={(e) => handleChange(index, 'certificateTitle', e.target.value)}
+                        className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                      />
+                    </div>
 
                     <div className="grid gap-3">
                       <div>
@@ -190,8 +210,12 @@ const App: React.FC = () => {
                           <label className="block text-[10px] font-bold text-blue-600 uppercase">Attendance Stats</label>
                           <input placeholder="Total Days" value={page.attendanceTotalDays} onChange={(e) => handleChange(index, 'attendanceTotalDays', e.target.value)} className="w-full border-b py-1 text-xs outline-none" />
                           <input placeholder="Days Attended" value={page.attendanceDaysAttended} onChange={(e) => handleChange(index, 'attendanceDaysAttended', e.target.value)} className="w-full border-b py-1 text-xs outline-none" />
-                          <input placeholder="Percentage" value={page.attendancePercentage} onChange={(e) => handleChange(index, 'attendancePercentage', e.target.value)} className="w-full border-b py-1 text-xs outline-none" />
-                        </div>
+                          <input
+                            placeholder="Percentage"
+                            value={page.attendancePercentage}
+                            readOnly
+                            className="w-full border-b py-1 text-xs outline-none bg-gray-100"
+                          />                        </div>
                       )}
                     </div>
                   </div>
