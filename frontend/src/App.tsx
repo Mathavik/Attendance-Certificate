@@ -16,6 +16,7 @@ type CertificateFields = {
   attendanceDaysAttended: string;
   attendancePercentage: string;
   signatureImage: string;
+  wishMessage: string;
 };
 
 const defaultFields: CertificateFields = {
@@ -27,7 +28,7 @@ const defaultFields: CertificateFields = {
   certificateTitle: 'ATTENDANCE CERTIFICATE',
   projectTitle: 'ENTERPRISE WORKFLOW AUTOMATION SYSTEM',
   certificateContent:
-    'This is to certify that {{student Name}} final year M.Sc Computer Science student of {{college Name}} has successfully attended the project work titled "{{project Title}}" at Pavitha Consultancy Services from {{from Date}} to {{to Date}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.\n\nWe wish every success in a successful future career.',
+    'This is to certify that {{student Name}} final year M.Sc Computer Science student of {{college Name}} has successfully attended the project work titled "{{project Title}}" at Pavitha Consultancy Services from {{from Date}} to {{to Date}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.',
 
 
   signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
@@ -35,6 +36,7 @@ const defaultFields: CertificateFields = {
   attendanceDaysAttended: '73',
   attendancePercentage: '87%',
   signatureImage: "",
+  wishMessage: "We wish every success in her future career."
 };
 
 const defaultPages: CertificateFields[] = [
@@ -45,9 +47,7 @@ const defaultPages: CertificateFields[] = [
   {
     ...defaultFields,
     certificateTitle: 'PROJECT COMPLETION CERTIFICATE',
-    certificateContent: `This is to certify that {{student Name}}, a student of {{college Name}} in M.Sc Computer Science, has successfully completed the project titled "{{project Title}}" under the guidance of PCS Software Solutions from {{from Date}} to {{to Date}}. The performance during this period was found to be satisfactory.
-
-We wish the student all the best in all future endeavours.`
+    certificateContent: `This is to certify that {{student Name}}, a student of {{college Name}} in M.Sc Computer Science, has successfully completed the project titled "{{project Title}}" under the guidance of PCS Software Solutions from {{from Date}} to {{to Date}}. The performance during this period was found to be satisfactory.`, wishMessage: "We wish the student all the best in all future endeavours."
   }
 ];
 
@@ -218,6 +218,17 @@ const App: React.FC = () => {
                           />                        </div>
                       )}
                     </div>
+
+                    <div>
+  <label className="block text-[10px] font-bold text-slate-500 uppercase">
+    Wish Message
+  </label>
+  <textarea
+    value={page.wishMessage}
+    onChange={(e) => handleChange(index, 'wishMessage', e.target.value)}
+    className="mt-1 w-full h-20 rounded border border-slate-300 px-3 py-2 text-sm resize-none"
+  />
+</div>
                   </div>
                 ))}
               </div>
@@ -233,13 +244,13 @@ const App: React.FC = () => {
             {pagesData.map((page, index) => (
               <div key={index} className="flex flex-col items-center gap-2">
                 <div className="w-full flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => downloadSinglePDF(index)}
-                    className="rounded-lg bg-blue-900 px-6 py-3 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-lg"
-                  >
-                    DOWNLOAD {page.certificateTitle}
-                  </button>
+                 <button
+  type="button"
+  onClick={() => downloadSinglePDF(index)}
+  className="inline-flex items-center gap-1 bg-blue-900 text-white text-xs px-3 py-1 rounded-full shadow-md hover:scale-105 hover:bg-blue-800 transition-all duration-200"
+>
+  ⬇ Download
+</button>
                 </div>
                 <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">PAGE {index + 1} PREVIEW</span>
                 <section
@@ -276,6 +287,11 @@ const App: React.FC = () => {
                     }}
                   />
 
+{!page.certificateTitle.includes('ATTENDANCE') && (
+ <p className="mt-6 text-center text-[17px] leading-[1.8] text-black font-normal">
+  {page.wishMessage}
+</p>
+)}
                   {/* Attendance Section */}
                   {page.certificateTitle.includes('ATTENDANCE') && (
                     <div className="mt-10 text-[16px] leading-[1.8] text-black">
@@ -290,10 +306,19 @@ const App: React.FC = () => {
                     </div>
                   )}
 
+{page.certificateTitle.includes('ATTENDANCE') && (
+<p className="mt-6 text-center text-[17px] leading-[1.8] text-black font-normal">    {page.wishMessage}
+  </p>
+)}
                   {/* Signatory */}
                   <div
-                    className={`absolute right-16 ${index === 1 ? "bottom-104" : "bottom-48"
-                      } text-right`}
+                   className={`absolute right-16 ${
+  index === 1
+    ? page.certificateContent.length > 900
+      ? "bottom-120"
+      : "bottom-104"
+    : "bottom-48"
+} text-right`}
                   >
 
                     {/* Signature Image */}
