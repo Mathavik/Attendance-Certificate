@@ -220,15 +220,15 @@ const App: React.FC = () => {
                     </div>
 
                     <div>
-  <label className="block text-[10px] font-bold text-slate-500 uppercase">
-    Wish Message
-  </label>
-  <textarea
-    value={page.wishMessage}
-    onChange={(e) => handleChange(index, 'wishMessage', e.target.value)}
-    className="mt-1 w-full h-20 rounded border border-slate-300 px-3 py-2 text-sm resize-none"
-  />
-</div>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">
+                        Wish Message
+                      </label>
+                      <textarea
+                        value={page.wishMessage}
+                        onChange={(e) => handleChange(index, 'wishMessage', e.target.value)}
+                        className="mt-1 w-full h-20 rounded border border-slate-300 px-3 py-2 text-sm resize-none"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -240,106 +240,98 @@ const App: React.FC = () => {
           </div>
 
           {/* Right Side: Preview (Vertical Layout) */}
-          <div className="flex flex-col items-center gap-12 pb-20">
-            {pagesData.map((page, index) => (
-              <div key={index} className="flex flex-col items-center gap-2">
-                <div className="w-full flex justify-end">
-                 <button
-  type="button"
-  onClick={() => downloadSinglePDF(index)}
-  className="inline-flex items-center gap-1 bg-blue-900 text-white text-xs px-3 py-1 rounded-full shadow-md hover:scale-105 hover:bg-blue-800 transition-all duration-200"
+          {/* Right Side: Preview */}
+<div className="flex flex-col items-center gap-12 pb-20">
+  {pagesData.map((page, index) => (
+    <div key={index} className="flex flex-col items-center gap-2">
+      <div className="w-full flex justify-end">
+        <button
+          type="button"
+          onClick={() => downloadSinglePDF(index)}
+          className="inline-flex items-center gap-1 bg-blue-900 text-white text-xs px-3 py-1 rounded-full shadow-md hover:scale-105 hover:bg-blue-800 transition-all duration-200"
+        >
+          ⬇ Download
+        </button>
+      </div>
+      <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">PAGE {index + 1} PREVIEW</span>
+      
+     <section
+  ref={setPageRef(index)}
+  className="border border-slate-300 shadow-2xl bg-white flex flex-col" // flex-col makes it vertical
+  style={{
+    width: '794px',
+    height: '1123px',
+    backgroundImage: "url('/images/bg.png')",
+    backgroundSize: '100% 100%',
+    backgroundPosition: 'center',
+    fontFamily: "'Times New Roman', serif",
+    padding: '180px 90px 80px 90px',
+    boxSizing: 'border-box'
+  }}
 >
-  ⬇ Download
-</button>
-                </div>
-                <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">PAGE {index + 1} PREVIEW</span>
-                <section
-                  ref={setPageRef(index)}
-                  className="border border-slate-300 shadow-2xl bg-white relative"
-                  style={{
-                    width: '794px',
-                    height: '1123px',
-                    backgroundImage: "url('/images/bg.png')",
-                    backgroundSize: '100% 100%',
-                    backgroundPosition: 'center',
-                    fontFamily: "'Times New Roman', serif",
-                    padding: '180px 90px 80px 90px'
-                  }}
-                >
+  {/* 1. Date */}
+  <div className="text-right text-[16px] font-bold text-black mb-6">
+    {page.date}
+  </div>
 
-                  {/* Date */}
-                  <div className="text-right text-[16px] font-bold text-black mb-6">
-                    {page.date}
-                  </div>
+  {/* 2. Title */}
+  <div className="text-center mb-8">
+    <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-1 uppercase tracking-tight">
+      {page.certificateTitle}
+    </h2>
+  </div>
 
-                  {/* Title */}
-                  <div className="text-center mb-12">
-                    <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-1 uppercase tracking-tight">
-                      {page.certificateTitle}
-                    </h2>
-                  </div>
+  {/* 3. Content Section (No flex-1 here) */}
+  <div> 
+    {/* Body Content */}
+                 <div
+  className="text-[17px] leading-[1.8] text-justify text-black mb-8 whitespace-pre-line"
+  style={{ textIndent: "40px" }}
+  dangerouslySetInnerHTML={{
+    __html: parseContent(page.certificateContent, page),
+  }}
+/>
 
-                  {/* Body Content */}
-                  <div
-                    className="text-[17px] leading-[1.8] text-justify text-black mb-8 whitespace-pre-line"
-                    dangerouslySetInnerHTML={{
-                      __html: parseContent(page.certificateContent, page),
-                    }}
-                  />
+    {/* Attendance Section */}
+    {page.certificateTitle.includes('ATTENDANCE') && (
+      <div className="mt-6 text-[16px] leading-[1.8] text-black">
+        <p className="mb-2 font-bold underline uppercase underline-offset-4 text-left">
+          Attendance Details
+        </p>
+        <div className="space-y-1 ml-4 text-left">
+          <p><span className="font-bold">Total No. of Days Allotted:</span> {page.attendanceTotalDays}</p>
+          <p><span className="font-bold">No. of Days Attended:</span> {page.attendanceDaysAttended}</p>
+          <p><span className="font-bold">Percentage of Attendance:</span> {page.attendancePercentage}</p>
+        </div>
+      </div>
+    )}
 
-{!page.certificateTitle.includes('ATTENDANCE') && (
- <p className="mt-6 text-center text-[17px] leading-[1.8] text-black font-normal">
-  {page.wishMessage}
-</p>
-)}
-                  {/* Attendance Section */}
-                  {page.certificateTitle.includes('ATTENDANCE') && (
-                    <div className="mt-10 text-[16px] leading-[1.8] text-black">
-                      <p className="mb-4 font-bold underline uppercase decoration-1 underline-offset-4">
-                        Attendance Details
-                      </p>
-                      <div className="space-y-1 ml-4">
-                        <p><span className="font-bold">Total No. of Days Allotted:</span> {page.attendanceTotalDays}</p>
-                        <p><span className="font-bold">No. of Days Attended:</span> {page.attendanceDaysAttended}</p>
-                        <p><span className="font-bold">Percentage of Attendance:</span> {page.attendancePercentage}</p>
-                      </div>
-                    </div>
-                  )}
+    {/* Wish Message */}
+    <p className="mt-8 text-center text-[17px] leading-[1.8] text-black font-normal">
+      {page.wishMessage}
+    </p>
+  </div>
 
-{page.certificateTitle.includes('ATTENDANCE') && (
-<p className="mt-6 text-center text-[17px] leading-[1.8] text-black font-normal">    {page.wishMessage}
-  </p>
-)}
-                  {/* Signatory */}
-                  <div
-                   className={`absolute right-16 ${
-  index === 1
-    ? page.certificateContent.length > 900
-      ? "bottom-120"
-      : "bottom-104"
-    : "bottom-48"
-} text-right`}
-                  >
-
-                    {/* Signature Image */}
-                    {page.signatureImage && (
-                      <img
-                        src={page.signatureImage}
-                        alt="signature"
-                        className="w-32 h-auto mb-2 mx-auto"
-                      />
-                    )}
-
-                    {/* Title */}
-                    <p className="text-[15px] font-bold uppercase">
-                      {page.signatoryTitle}
-                    </p>
-
-                  </div>
-                </section>
-              </div>
-            ))}
-          </div>
+  {/* 4. Signature Section - Fixed gap from content */}
+  {/* Neenga content koraika koraika, intha section auto-va mela yerum */}
+  <div className="mt-16 flex flex-col items-end"> 
+    <div className="text-right pr-4">
+      {page.signatureImage && (
+        <img
+          src={page.signatureImage}
+          alt="signature"
+          className="w-32 h-auto mb-2 ml-auto" 
+        />
+      )}
+      <p className="text-[15px] font-bold uppercase">
+        {page.signatoryTitle}
+      </p>
+    </div>
+  </div>
+</section>
+    </div>
+  ))}
+</div>
 
         </div>
       </div>
