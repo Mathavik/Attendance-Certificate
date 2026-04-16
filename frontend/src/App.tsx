@@ -172,6 +172,16 @@ const App: React.FC = () => {
                     <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
                       Certificate {index + 1} ({page.certificateTitle.split(' ')[0]})
                     </h3>
+
+                     {/* Date */}
+  <div>
+    <label className="block text-[10px] font-bold uppercase">Date</label>
+    <input
+      value={page.date}
+      onChange={(e) => handleChange(index, 'date', e.target.value)}
+      className="mt-1 w-full border px-3 py-2 text-sm"
+    />
+  </div>
                     <div>
                       <label className="block text-[10px] font-bold text-slate-500 uppercase">
                         Certificate Title
@@ -184,10 +194,62 @@ const App: React.FC = () => {
                     </div>
 
                     <div className="grid gap-3">
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase">Student Name</label>
-                        <input value={page.studentName} onChange={(e) => handleChange(index, 'studentName', e.target.value)} className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
-                      </div>
+                     <div className="grid gap-3">
+
+ 
+
+  {/* Student Name */}
+  <div>
+    <label className="block text-[10px] font-bold uppercase">Student Name</label>
+    <input
+      value={page.studentName}
+      onChange={(e) => handleChange(index, 'studentName', e.target.value)}
+      className="mt-1 w-full border px-3 py-2 text-sm"
+    />
+  </div>
+
+  {/* College */}
+  <div>
+    <label className="block text-[10px] font-bold uppercase">College Name</label>
+    <input
+      value={page.collegeName}
+      onChange={(e) => handleChange(index, 'collegeName', e.target.value)}
+      className="mt-1 w-full border px-3 py-2 text-sm"
+    />
+  </div>
+
+  {/* Project */}
+  <div>
+    <label className="block text-[10px] font-bold uppercase">Project Title</label>
+    <input
+      value={page.projectTitle}
+      onChange={(e) => handleChange(index, 'projectTitle', e.target.value)}
+      className="mt-1 w-full border px-3 py-2 text-sm"
+    />
+  </div>
+
+  {/* Dates */}
+  <div className="grid grid-cols-2 gap-2">
+    <div>
+      <label className="block text-[10px] font-bold uppercase">From Date</label>
+      <input
+        value={page.fromDate}
+        onChange={(e) => handleChange(index, 'fromDate', e.target.value)}
+        className="mt-1 w-full border px-3 py-2 text-sm"
+      />
+    </div>
+
+    <div>
+      <label className="block text-[10px] font-bold uppercase">To Date</label>
+      <input
+        value={page.toDate}
+        onChange={(e) => handleChange(index, 'toDate', e.target.value)}
+        className="mt-1 w-full border px-3 py-2 text-sm"
+      />
+    </div>
+  </div>
+
+</div>
 
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase">
@@ -209,57 +271,40 @@ const App: React.FC = () => {
                           className="mt-1 w-full text-sm"
                         />
                       </div>
-                    <div className="grid grid-cols-3 gap-2">
-  
-  <div>
-    <label className="block text-[10px] font-bold text-slate-500 uppercase">
-      Date
-    </label>
-    <input
-      value={page.date}
-      onChange={(e) => handleChange(index, 'date', e.target.value)}
-      className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
-    />
-  </div>
+ 
 
-  <div>
-    <label className="block text-[10px] font-bold text-slate-500 uppercase">
-      From Date
-    </label>
-    <input
-      value={page.fromDate}
-      onChange={(e) => handleChange(index, 'fromDate', e.target.value)}
-      className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
-    />
-  </div>
+                   <div>
+  <label className="block text-[10px] font-bold text-slate-500 uppercase">
+    Content
+  </label>
 
-  <div>
-    <label className="block text-[10px] font-bold text-slate-500 uppercase">
-      To Date
-    </label>
-    <input
-      value={page.toDate}
-      onChange={(e) => handleChange(index, 'toDate', e.target.value)}
-      className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
-    />
-  </div>
+  <textarea
+    value={page.certificateContent}
+    onChange={(e) =>
+      handleChange(index, 'certificateContent', e.target.value)
+    }
+    className="mt-1 w-full h-32 rounded border border-slate-300 px-3 py-2 text-sm resize-none"
+  />
 
+  {/* 👇 INGA dhaan dropdown podanum */}
+  <select
+    onChange={(e) => {
+      const value = e.target.value;
+      if (!value) return;
+
+      const updated = page.certificateContent + " " + value;
+      handleChange(index, "certificateContent", updated);
+    }}
+    className="mt-2 w-full border p-2 text-sm"
+  >
+    <option value="">-- Insert Field --</option>
+    <option value="{{student Name}}">Student Name</option>
+    <option value="{{college Name}}">College Name</option>
+    <option value="{{from Date}}">From Date</option>
+    <option value="{{to Date}}">To Date</option>
+    <option value="{{project Title}}">Project Title</option>
+  </select>
 </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase">College Name</label>
-                        <input value={page.collegeName} onChange={(e) => handleChange(index, 'collegeName', e.target.value)} className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm" />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase">Project Title</label>
-                        <input value={page.projectTitle} onChange={(e) => handleChange(index, 'projectTitle', e.target.value)} className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm" />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase">Content</label>
-                        <textarea value={page.certificateContent} onChange={(e) => handleChange(index, 'certificateContent', e.target.value)} className="mt-1 w-full h-32 rounded border border-slate-300 px-3 py-2 text-sm resize-none" />
-                      </div>
 
                       {page.certificateTitle.includes('ATTENDANCE') && (
                         <div className="p-3 bg-white border rounded space-y-2">
@@ -332,8 +377,7 @@ const App: React.FC = () => {
 
   {/* 2. Title */}
   <div className="text-center mb-8">
-    <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-1 uppercase tracking-tight">
-      {page.certificateTitle}
+<h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-2 mb-2 uppercase tracking-tight">      {page.certificateTitle}
     </h2>
   </div>
 
@@ -351,8 +395,7 @@ const App: React.FC = () => {
     {/* Attendance Section */}
     {page.certificateTitle.includes('ATTENDANCE') && (
       <div className="mt-6 text-[16px] leading-[1.8] text-black">
-        <p className="mb-2 font-bold underline uppercase underline-offset-4 text-left">
-          Attendance Details
+<p className="mb-3 font-bold uppercase text-left">          Attendance Details
         </p>
         <div className="space-y-1 ml-4 text-left">
           <p><span className="font-bold">Total No. of Days Allotted:</span> {page.attendanceTotalDays}</p>
