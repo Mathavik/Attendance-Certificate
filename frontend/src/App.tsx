@@ -53,7 +53,7 @@ const defaultPages: CertificateFields[] = [
 const App: React.FC = () => {
   const [pagesData, setPagesData] = useState<CertificateFields[]>(defaultPages);
   const pageRefs = useRef<Array<HTMLElement | null>>([]);
-
+const textareaRefs = useRef<Array<HTMLTextAreaElement | null>>([]);
   const parseContent = (content: string, page: CertificateFields) => {
     return content
       .replace(/{{student Name}}/g, `<strong>${page.studentName}</strong>`)
@@ -278,25 +278,51 @@ const App: React.FC = () => {
     Content
   </label>
 
-  <textarea
-    value={page.certificateContent}
-    onChange={(e) =>
-      handleChange(index, 'certificateContent', e.target.value)
-    }
-    className="mt-1 w-full h-32 rounded border border-slate-300 px-3 py-2 text-sm resize-none"
-  />
+ <textarea
+  ref={(el) => (textareaRefs.current[index] = el)}
+  value={page.certificateContent}
+  onChange={(e) =>
+    handleChange(index, 'certificateContent', e.target.value)
+  }
+  className="mt-1 w-full h-32 border px-3 py-2 text-sm"
+/>
 
   {/* 👇 INGA dhaan dropdown podanum */}
-  <select
-    onChange={(e) => {
-      const value = e.target.value;
-      if (!value) return;
+<select
+  onChange={(e) => {
+    const value = e.target.value;
+    if (!value) return;
 
-      const updated = page.certificateContent + " " + value;
-      handleChange(index, "certificateContent", updated);
-    }}
-    className="mt-2 w-full border p-2 text-sm"
-  >
+    const textarea = textareaRefs.current[index];
+
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    const currentText = page.certificateContent;
+
+    let newText;
+
+    if (start !== null && end !== null) {
+      newText =
+        currentText.substring(0, start) +
+        value +
+        currentText.substring(end);
+    } else {
+      newText = currentText + " " + value;
+    }
+
+    handleChange(index, "certificateContent", newText);
+
+    // cursor position update 🔥
+    setTimeout(() => {
+      textarea.selectionStart = textarea.selectionEnd =
+        start + value.length;
+      textarea.focus();
+    }, 0);
+  }}
+>
     <option value="">-- Insert Field --</option>
     <option value="{{student Name}}">Student Name</option>
     <option value="{{college Name}}">College Name</option>
