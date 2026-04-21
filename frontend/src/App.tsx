@@ -84,9 +84,9 @@ You are expected to maintain professional conduct and adhere to the rules and co
 
 Upon successful completion, you will receive an {{internship Completion Title}} and a **Project Evaluation Letter**.
 
-We look forward to working with you and supporting your academic and professional growth.`,
+We look forward to working with you and supporting your academic and professional growth.
 
-    wishMessage: `Warm regards,<br/>
+Warm regards,
 
 **For PCS Software Solutions**`
   }
@@ -540,12 +540,12 @@ const App: React.FC = () => {
                   }}
                 >
                   {/* 1. Date */}
-                  <div className="text-right text-[16px] font-bold text-black mb-6">
+                  <div className="text-right text-[16px] font-bold text-black mb-2">
                     {page.date}
                   </div>
 
                   {/* 2. Title */}
-                  <div className="text-center mb-8">
+                  <div className="text-center mb-4">
                     <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-2 mb-2 uppercase tracking-tight">      {page.certificateTitle}
                     </h2>
                   </div>
@@ -555,7 +555,7 @@ const App: React.FC = () => {
                     {/* Body Content */}
                     <div
                       className={`text-[15px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
-                        ? 'leading-[1.2] mb-4'
+                        ? 'leading-[1.3] mb-4'
                         : 'leading-[1.5] mb-8'
                         }`} style={{
                           textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
@@ -579,12 +579,14 @@ const App: React.FC = () => {
                     )}
 
                     {/* Wish Message */}
-                    <p
-                      className="mt-8 text-left text-[17px] leading-[1.8] text-black font-normal"
-                      dangerouslySetInnerHTML={{
-                        __html: page.wishMessage.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                      }}
-                    />
+                    {!page.certificateTitle.includes('ACCEPTANCE') && (
+                      <p
+                        className="mt-8 text-left text-[17px] leading-[1.8] text-black font-normal"
+                        dangerouslySetInnerHTML={{
+                          __html: page.wishMessage.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                        }}
+                      />
+                    )}
                   </div>
 
                   {/* 4. Signature Section - Fixed gap from content */}
