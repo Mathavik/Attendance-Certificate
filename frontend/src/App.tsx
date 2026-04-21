@@ -535,13 +535,12 @@ const App: React.FC = () => {
                     backgroundPosition: 'center',
                     fontFamily: "'Times New Roman', serif",
                     padding: page.certificateTitle.includes('ACCEPTANCE')
-                      ? '150px 80px 60px 80px'
+                      ? '90px 70px 40px 70px'
                       : '180px 90px 80px 90px', boxSizing: 'border-box'
                   }}
                 >
                   {/* 1. Date */}
-                  <div className="text-right text-[16px] font-bold text-black mb-6">
-                    {page.date}
+<div className="text-right text-[16px] font-bold text-black mt-14 mb-2">                    {page.date}
                   </div>
 
                   {/* 2. Title */}
@@ -555,7 +554,7 @@ const App: React.FC = () => {
                     {/* Body Content */}
                     <div
                       className={`text-[16px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
-                        ? 'leading-[1.6] mb-4'
+                        ? 'leading-[1.2] mb-1'
                         : 'leading-[1.8] mb-8'
                         }`} style={{
                           textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
@@ -589,34 +588,30 @@ const App: React.FC = () => {
 
                   {/* 4. Signature Section - Fixed gap from content */}
                   {/* Neenga content koraika koraika, intha section auto-va mela yerum */}
-                  <div
-                    className={`flex flex-col items-end ${page.certificateTitle.includes('ACCEPTANCE') ? 'mt-8' : 'mt-16'
-                      }`}
-                  >                    <div className="pr-4 text-center">
-                      {page.signatureImage && (
-                        <img
-                          src={page.signatureImage}
-                          alt="signature"
-                          className="w-32 h-auto mb-2 mx-auto"
-                        />
-                      )}
-                      {page.certificateTitle.includes('ACCEPTANCE') ? (
-                        <>
-                          <p className="text-[14px] mt-2 font-bold">
-                            Mahalakshmi Ganesan
-                          </p>
-                          <p className="text-[13px]">
-                            Director
-                          </p>
+                 <div
+  className={`flex flex-col ${
+    page.certificateTitle.includes('ACCEPTANCE')
+      ? 'items-start mt-6'
+      : 'items-end mt-16'
+  }`}
+>
+  <div className="text-left">
+    {page.signatureImage && (
+      <img
+        src={page.signatureImage}
+        alt="signature"
+        className="w-44 h-auto mb-2"
+      />
+    )}
 
-                        </>
-                      ) : (
-                        <p className="text-[15px] font-bold uppercase">
-                          {page.signatoryTitle}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+    <p className="text-[14px] mt-2 font-bold">
+      Mahalakshmi Ganesan
+    </p>
+    <p className="text-[13px]">
+      Director
+    </p>
+  </div>
+</div>
                 </section>
               </div>
             ))}
