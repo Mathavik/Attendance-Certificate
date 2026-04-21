@@ -535,7 +535,7 @@ const App: React.FC = () => {
                     backgroundPosition: 'center',
                     fontFamily: "'Times New Roman', serif",
                     padding: page.certificateTitle.includes('ACCEPTANCE')
-                      ? '150px 80px 60px 80px'
+                      ? '140px 80px 60px 80px'
                       : '180px 90px 80px 90px', boxSizing: 'border-box'
                   }}
                 >
@@ -554,9 +554,9 @@ const App: React.FC = () => {
                   <div>
                     {/* Body Content */}
                     <div
-                      className={`text-[16px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
-                        ? 'leading-[1.6] mb-4'
-                        : 'leading-[1.8] mb-8'
+                      className={`text-[15px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
+                        ? 'leading-[1.2] mb-4'
+                        : 'leading-[1.5] mb-8'
                         }`} style={{
                           textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
                         }}
@@ -590,9 +590,16 @@ const App: React.FC = () => {
                   {/* 4. Signature Section - Fixed gap from content */}
                   {/* Neenga content koraika koraika, intha section auto-va mela yerum */}
                   <div
-                    className={`flex flex-col items-end ${page.certificateTitle.includes('ACCEPTANCE') ? 'mt-8' : 'mt-16'
+                    className={`flex flex-col ${page.certificateTitle.includes('ACCEPTANCE')
+                      ? 'items-start mt-6'
+                      : 'items-end mt-16'
                       }`}
-                  >                    <div className="pr-4 text-center">
+                  >                <div
+                    className={`${page.certificateTitle.includes('ACCEPTANCE')
+                      ? 'text-left'
+                      : 'pr-4 text-center'
+                      }`}
+                  >
                       {page.signatureImage && (
                         <img
                           src={page.signatureImage}
