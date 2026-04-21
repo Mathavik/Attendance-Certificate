@@ -260,22 +260,21 @@ const App: React.FC = () => {
                       </label>
                       <input
                         value={page.certificateTitle}
-                        onChange={(e) => handleChange(index, 'certificateTitle', e.target.value)}
+                        onChange={(e) => handleChange(index, 'certificateTitle', e.target.value.toUpperCase())}
                         className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
                       />
                     </div>
 
                     <div className="grid gap-3">
                       <div className="grid gap-3">
-
-
-
                         {/* Student Name */}
                         <div>
                           <label className="block text-[10px] font-bold uppercase">Student Name</label>
                           <input
                             value={page.studentName}
-                            onChange={(e) => handleChange(index, 'studentName', e.target.value)}
+                            onChange={(e) =>
+                              handleChange(index, 'studentName', e.target.value.toUpperCase())
+                            }
                             className="mt-1 w-full border px-3 py-2 text-sm"
                           />
                         </div>
@@ -487,17 +486,17 @@ const App: React.FC = () => {
                           />                        </div>
                       )}
                     </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">
-                        Wish Message
-                      </label>
-                      <textarea
-                        value={page.wishMessage}
-                        onChange={(e) => handleChange(index, 'wishMessage', e.target.value)}
-                        className="mt-1 w-full h-20 rounded border border-slate-300 px-3 py-2 text-sm resize-none"
-                      />
-                    </div>
+                    {!page.certificateTitle.includes('ACCEPTANCE') && (
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase">
+                          Wish Message
+                        </label>
+                        <textarea
+                          value={page.wishMessage}
+                          onChange={(e) => handleChange(index, 'wishMessage', e.target.value)}
+                          className="mt-1 w-full h-20 rounded border border-slate-300 px-3 py-2 text-sm resize-none"
+                        />
+                      </div>)}
                   </div>
                 ))}
               </div>
