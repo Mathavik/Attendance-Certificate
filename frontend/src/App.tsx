@@ -534,17 +534,17 @@ const App: React.FC = () => {
                     backgroundPosition: 'center',
                     fontFamily: "'Times New Roman', serif",
                     padding: page.certificateTitle.includes('ACCEPTANCE')
-                      ? '140px 80px 60px 80px'
+                      ? '150px 80px 60px 80px'
                       : '180px 90px 80px 90px', boxSizing: 'border-box'
                   }}
                 >
                   {/* 1. Date */}
-                  <div className="text-right text-[16px] font-bold text-black mb-1">
+                  <div className="text-right text-[16px] font-bold text-black mb-6">
                     {page.date}
                   </div>
 
                   {/* 2. Title */}
-                  <div className="text-center mb-1">
+                  <div className="text-center mb-8">
                     <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-2 mb-2 uppercase tracking-tight">      {page.certificateTitle}
                     </h2>
                   </div>
@@ -554,8 +554,8 @@ const App: React.FC = () => {
                     {/* Body Content */}
                     <div
                       className={`text-[15px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
-                        ? 'leading-[1.3] mb-4'
-                        : 'leading-[1.5] mb-8'
+                        ? 'leading-[1.6] mb-4'
+                        : 'leading-[1.8] mb-8'
                         }`} style={{
                           textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
                         }}
