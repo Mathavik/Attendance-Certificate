@@ -539,12 +539,12 @@ const App: React.FC = () => {
                   }}
                 >
                   {/* 1. Date */}
-                  <div className="text-right text-[16px] font-bold text-black mb-2">
+                  <div className="text-right text-[16px] font-bold text-black mb-1">
                     {page.date}
                   </div>
 
                   {/* 2. Title */}
-                  <div className="text-center mb-4">
+                  <div className="text-center mb-1">
                     <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-2 mb-2 uppercase tracking-tight">      {page.certificateTitle}
                     </h2>
                   </div>
