@@ -551,8 +551,7 @@ const App: React.FC = () => {
                   </div>
 
                   {/* 3. Content Section (No flex-1 here) */}
-                  <div
-                    className="flex-1 flex flex-col justify-between">
+                  <div>
                     {/* Body Content */}
                     <div
                       className={`text-[16px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
@@ -603,7 +602,7 @@ const App: React.FC = () => {
                       )}
                       {page.certificateTitle.includes('ACCEPTANCE') ? (
                         <>
-                          <p className="text-[14px] mt-2 font-semibold">
+                          <p className="text-[14px] mt-2 font-bold">
                             Mahalakshmi Ganesan
                           </p>
                           <p className="text-[13px]">
