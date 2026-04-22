@@ -17,13 +17,17 @@ type CertificateFields = {
   attendancePercentage: string;
   signatureImage: string;
   wishMessage: string;
-  // ✅ NEW FIELDS
   internshipTitle: string;
   internshipCompletionTitle: string;
   position: string;
   department: string;
   reportingManager: string;
   location: string;
+  // ✅ HIDE FLAGS
+  hideReportingManager: boolean;
+  hidePosition: boolean;
+  hideDepartment: boolean;
+  hideLocation: boolean;
 };
 
 const defaultFields: CertificateFields = {
@@ -37,7 +41,6 @@ const defaultFields: CertificateFields = {
   certificateContent:
     'This is to certify that {{student Name}} final year M.Sc Computer Science student of {{college Name}} has successfully attended the project work titled "{{project Title}}" at Pavitha Consultancy Services from {{from Date}} to {{to Date}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.',
 
-
   signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
   attendanceTotalDays: '84 (exclude Sundays and other government holidays)',
   attendanceDaysAttended: '73',
@@ -50,6 +53,10 @@ const defaultFields: CertificateFields = {
   department: "Business Analyst",
   reportingManager: "Surya G, Training Head",
   location: "Surandai-Tenkasi, Tamil Nadu",
+  hideReportingManager: false,
+  hidePosition: false,
+  hideDepartment: false,
+  hideLocation: false,
 };
 
 const defaultPages: CertificateFields[] = [
@@ -91,16 +98,25 @@ const App: React.FC = () => {
   const [pagesData, setPagesData] = useState<CertificateFields[]>(defaultPages);
   const pageRefs = useRef<Array<HTMLElement | null>>([]);
   const textareaRefs = useRef<Array<HTMLTextAreaElement | null>>([]);
+
   const parseContent = (content: string, page: CertificateFields) => {
     let parsed = content;
 
-    // ✅ condition check
     const isAcceptance = page.certificateTitle.includes('ACCEPTANCE');
+
+    // Conditional replacements based on hide flags
+    let positionText = page.position;
+    let departmentText = page.department;
+    let reportingManagerText = page.reportingManager;
+    let locationText = page.location;
+
+    if (page.hidePosition) positionText = '';
+    if (page.hideDepartment) departmentText = '';
+    if (page.hideReportingManager) reportingManagerText = '';
+    if (page.hideLocation) locationText = '';
 
     parsed = parsed
       .replace(/{{student Name}}/g, `<strong>${page.studentName}</strong>`)
-
-      // 👇 condition based bold
       .replace(
         /{{college Name}}/g,
         isAcceptance ? `${page.collegeName}` : `<strong>${page.collegeName}</strong>`
@@ -113,18 +129,31 @@ const App: React.FC = () => {
         /{{to Date}}/g,
         isAcceptance ? `${page.toDate}` : `<strong>${page.toDate}</strong>`
       )
-
       .replace(/{{project Title}}/g, `<strong>${page.projectTitle}</strong>`)
       .replace(/{{internship Title}}/g, `<strong>${page.internshipTitle}</strong>`)
       .replace(/{{internship Completion Title}}/g, `<strong>${page.internshipCompletionTitle}</strong>`)
+      .replace(/{{position}}/g, positionText)
+      .replace(/{{department}}/g, departmentText)
+      .replace(/{{reportingManager}}/g, reportingManagerText)
+      .replace(/{{location}}/g, locationText);
 
-      // already fixed
-      .replace(/{{position}}/g, `${page.position}`)
-      .replace(/{{department}}/g, `${page.department}`)
-      .replace(/{{reportingManager}}/g, `${page.reportingManager}`)
-      .replace(/{{location}}/g, `${page.location}`);
+    // Remove empty bullet points if fields are hidden
+    if (page.hidePosition) {
+      parsed = parsed.replace(/•\s*\*\*Position:\*\*\s*\n?/g, '');
+    }
+    if (page.hideDepartment) {
+      parsed = parsed.replace(/•\s*\*\*Department:\*\*\s*\n?/g, '');
+    }
+    if (page.hideReportingManager) {
+      parsed = parsed.replace(/•\s*\*\*Reporting Manager:\*\*\s*\n?/g, '');
+    }
+    if (page.hideLocation) {
+      parsed = parsed.replace(/•\s*\*\*Location:\*\*\s*\n?/g, '');
+    }
 
-    // markdown bold support
+    // Clean up multiple consecutive newlines
+    parsed = parsed.replace(/\n\s*\n\s*\n/g, '\n\n');
+
     parsed = parsed.replace(/\*\*(.*?)\*\*/g, `<strong>$1</strong>`);
     return parsed;
   };
@@ -133,14 +162,13 @@ const App: React.FC = () => {
     pageRefs.current[index] = element;
   };
 
-  const handleChange = (index: number, key: keyof CertificateFields, value: string) => {
+  const handleChange = (index: number, key: keyof CertificateFields, value: any) => {
     setPagesData((current) =>
       current.map((page, pageIndex) => {
         if (pageIndex !== index) return page;
 
         let updatedPage = { ...page, [key]: value };
 
-        // ✅ AUTO CALCULATION LOGIC
         if (
           key === 'attendanceTotalDays' ||
           key === 'attendanceDaysAttended'
@@ -160,7 +188,6 @@ const App: React.FC = () => {
       })
     );
   };
-
 
   const downloadBothPDF = async () => {
     const pdf = new jsPDF({
@@ -184,7 +211,7 @@ const App: React.FC = () => {
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
       if (i !== 0) {
-        pdf.addPage(); // next page
+        pdf.addPage();
       }
 
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
@@ -192,6 +219,7 @@ const App: React.FC = () => {
 
     pdf.save(`Certificates_${pagesData[0].studentName}.pdf`);
   };
+
   const downloadSinglePDF = async (index: number) => {
     const page = pageRefs.current[index];
     if (!page) return;
@@ -222,12 +250,13 @@ const App: React.FC = () => {
       console.error('Error generating PDF:', error);
     }
   };
+
   return (
     <div className="min-h-screen bg-slate-100 px-4 py-10">
       <div className="mx-auto max-w-[1400px]">
         <div className="grid gap-8 lg:grid-cols-[400px_1fr]">
 
-          {/* Left Side: Input Form (Sticky to keep it visible while scrolling) */}
+          {/* Left Side: Input Form */}
           <div className="h-fit lg:sticky lg:top-10">
             <form className="space-y-6 rounded-lg border border-slate-300 bg-white p-6 shadow-md">
               <h2 className="text-xl font-bold text-blue-900 border-b pb-2">Certificate Editor</h2>
@@ -239,7 +268,6 @@ const App: React.FC = () => {
                       Certificate {index + 1} ({page.certificateTitle.split(' ')[0]})
                     </h3>
 
-                    {/* Date */}
                     <div>
                       <label className="block text-[10px] font-bold uppercase">Date</label>
                       <input
@@ -248,6 +276,7 @@ const App: React.FC = () => {
                         className="mt-1 w-full border px-3 py-2 text-sm"
                       />
                     </div>
+
                     <div>
                       <label className="block text-[10px] font-bold text-slate-500 uppercase">
                         Certificate Title
@@ -261,7 +290,6 @@ const App: React.FC = () => {
 
                     <div className="grid gap-3">
                       <div className="grid gap-3">
-                        {/* Student Name */}
                         <div>
                           <label className="block text-[10px] font-bold uppercase">Student Name</label>
                           <input
@@ -273,7 +301,6 @@ const App: React.FC = () => {
                           />
                         </div>
 
-                        {/* College */}
                         <div>
                           <label className="block text-[10px] font-bold uppercase">College Name</label>
                           <input
@@ -282,8 +309,6 @@ const App: React.FC = () => {
                             className="mt-1 w-full border px-3 py-2 text-sm"
                           />
                         </div>
-
-                        {/* Project */}
 
                         {!page.certificateTitle.includes('ACCEPTANCE') && (
                           <div>
@@ -298,7 +323,6 @@ const App: React.FC = () => {
                           </div>
                         )}
 
-                        {/* Dates */}
                         <div className="grid grid-cols-2 gap-2">
                           <div>
                             <label className="block text-[10px] font-bold uppercase">From Date</label>
@@ -317,6 +341,7 @@ const App: React.FC = () => {
                               className="mt-1 w-full border px-3 py-2 text-sm"
                             />
                           </div>
+
                           {page.certificateTitle.includes('ACCEPTANCE') && (
                             <>
                               <div>
@@ -328,39 +353,91 @@ const App: React.FC = () => {
                                 />
                               </div>
 
+                              {/* POSITION with Hide Checkbox */}
                               <div>
-                                <label className="block text-[10px] font-bold uppercase">Position</label>
+                                <div className="flex items-center justify-between">
+                                  <label className="block text-[10px] font-bold uppercase">Position</label>
+                                  <label className="flex items-center gap-1 text-[9px]">
+                                    <input
+                                      type="checkbox"
+                                      checked={page.hidePosition}
+                                      onChange={(e) => handleChange(index, 'hidePosition', e.target.checked)}
+                                      className="w-3 h-3"
+                                    />
+                                    Hide from certificate
+                                  </label>
+                                </div>
                                 <input
                                   value={page.position}
                                   onChange={(e) => handleChange(index, 'position', e.target.value)}
                                   className="mt-1 w-full border px-3 py-2 text-sm"
+                                  disabled={page.hidePosition}
                                 />
                               </div>
 
+                              {/* DEPARTMENT with Hide Checkbox */}
                               <div>
-                                <label className="block text-[10px] font-bold uppercase">Department</label>
+                                <div className="flex items-center justify-between">
+                                  <label className="block text-[10px] font-bold uppercase">Department</label>
+                                  <label className="flex items-center gap-1 text-[9px]">
+                                    <input
+                                      type="checkbox"
+                                      checked={page.hideDepartment}
+                                      onChange={(e) => handleChange(index, 'hideDepartment', e.target.checked)}
+                                      className="w-3 h-3"
+                                    />
+                                    Hide from certificate
+                                  </label>
+                                </div>
                                 <input
                                   value={page.department}
                                   onChange={(e) => handleChange(index, 'department', e.target.value)}
                                   className="mt-1 w-full border px-3 py-2 text-sm"
+                                  disabled={page.hideDepartment}
                                 />
                               </div>
 
+                              {/* REPORTING MANAGER with Hide Checkbox */}
                               <div>
-                                <label className="block text-[10px] font-bold uppercase">Reporting Manager</label>
+                                <div className="flex items-center justify-between">
+                                  <label className="block text-[10px] font-bold uppercase">Reporting Manager</label>
+                                  <label className="flex items-center gap-1 text-[9px]">
+                                    <input
+                                      type="checkbox"
+                                      checked={page.hideReportingManager}
+                                      onChange={(e) => handleChange(index, 'hideReportingManager', e.target.checked)}
+                                      className="w-3 h-3"
+                                    />
+                                    Hide from certificate
+                                  </label>
+                                </div>
                                 <input
                                   value={page.reportingManager}
                                   onChange={(e) => handleChange(index, 'reportingManager', e.target.value)}
                                   className="mt-1 w-full border px-3 py-2 text-sm"
+                                  disabled={page.hideReportingManager}
                                 />
                               </div>
 
+                              {/* LOCATION with Hide Checkbox */}
                               <div>
-                                <label className="block text-[10px] font-bold uppercase">Location</label>
+                                <div className="flex items-center justify-between">
+                                  <label className="block text-[10px] font-bold uppercase">Location</label>
+                                  <label className="flex items-center gap-1 text-[9px]">
+                                    <input
+                                      type="checkbox"
+                                      checked={page.hideLocation}
+                                      onChange={(e) => handleChange(index, 'hideLocation', e.target.checked)}
+                                      className="w-3 h-3"
+                                    />
+                                    Hide from certificate
+                                  </label>
+                                </div>
                                 <input
                                   value={page.location}
                                   onChange={(e) => handleChange(index, 'location', e.target.value)}
                                   className="mt-1 w-full border px-3 py-2 text-sm"
+                                  disabled={page.hideLocation}
                                 />
                               </div>
 
@@ -374,10 +451,7 @@ const App: React.FC = () => {
                               </div>
                             </>
                           )}
-
                         </div>
-
-
                       </div>
 
                       <div>
@@ -401,7 +475,6 @@ const App: React.FC = () => {
                         />
                       </div>
 
-
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase">
                           Content
@@ -416,21 +489,17 @@ const App: React.FC = () => {
                           className="mt-1 w-full h-32 border px-3 py-2 text-sm"
                         />
 
-                        {/* 👇 INGA dhaan dropdown podanum */}
                         <select
                           onChange={(e) => {
                             const value = e.target.value;
                             if (!value) return;
 
                             const textarea = textareaRefs.current[index];
-
                             if (!textarea) return;
 
                             const start = textarea.selectionStart;
                             const end = textarea.selectionEnd;
-
                             const currentText = page.certificateContent;
-
                             let newText;
 
                             if (start !== null && end !== null) {
@@ -444,7 +513,6 @@ const App: React.FC = () => {
 
                             handleChange(index, "certificateContent", newText);
 
-                            // cursor position update 🔥
                             setTimeout(() => {
                               textarea.selectionStart = textarea.selectionEnd =
                                 start + value.length;
@@ -461,7 +529,7 @@ const App: React.FC = () => {
                           <option value="{{internship Title}}">Internship Title</option>
                           <option value="{{position}}">Position</option>
                           <option value="{{department}}">Department</option>
-                          <option value="{{reporting Manager}}">Reporting Manager</option>
+                          <option value="{{reportingManager}}">Reporting Manager</option>
                           <option value="{{location}}">Location</option>
                           <option value="{{internship Completion Title}}">Internship Completion Title</option>
                         </select>
@@ -477,9 +545,11 @@ const App: React.FC = () => {
                             value={page.attendancePercentage}
                             readOnly
                             className="w-full border-b py-1 text-xs outline-none bg-gray-100"
-                          />                        </div>
+                          />
+                        </div>
                       )}
                     </div>
+
                     {!page.certificateTitle.includes('ACCEPTANCE') && (
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase">
@@ -490,7 +560,8 @@ const App: React.FC = () => {
                           onChange={(e) => handleChange(index, 'wishMessage', e.target.value)}
                           className="mt-1 w-full h-20 rounded border border-slate-300 px-3 py-2 text-sm resize-none"
                         />
-                      </div>)}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -501,7 +572,6 @@ const App: React.FC = () => {
             </form>
           </div>
 
-          {/* Right Side: Preview (Vertical Layout) */}
           {/* Right Side: Preview */}
           <div className="flex flex-col items-center gap-12 pb-20">
             {pagesData.map((page, index) => (
@@ -519,7 +589,7 @@ const App: React.FC = () => {
 
                 <section
                   ref={setPageRef(index)}
-                  className="border border-slate-300 shadow-2xl bg-white flex flex-col" // flex-col makes it vertical
+                  className="border border-slate-300 shadow-2xl bg-white flex flex-col"
                   style={{
                     width: '794px',
                     height: '1123px',
@@ -528,42 +598,38 @@ const App: React.FC = () => {
                     backgroundPosition: 'center',
                     fontFamily: "'Times New Roman', serif",
                     padding: page.certificateTitle.includes('ACCEPTANCE')
-  ? '150px 80px 60px 80px'
-  : '180px 90px 80px 90px'
+                      ? '150px 80px 60px 80px'
+                      : '180px 90px 80px 90px'
                   }}
                 >
-                  {/* 1. Date */}
                   <div className="text-right text-[16px] font-bold text-black mb-6">
                     {page.date}
                   </div>
 
-                  {/* 2. Title */}
                   <div className="text-center mb-2">
-                    <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-2 mb-2 uppercase tracking-tight">      {page.certificateTitle}
+                    <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-2 mb-2 uppercase tracking-tight">
+                      {page.certificateTitle}
                     </h2>
                   </div>
 
-                  {/* 3. Content Section (No flex-1 here) */}
                   <div>
-                    {/* Body Content */}
                     <div
-  className={`text-[15px] text-justify text-black whitespace-pre-line ${
-    page.certificateTitle.includes('ACCEPTANCE')
-      ? 'leading-[1.5] mb-3'
-      : 'leading-[1.8] mb-8'
-  }`} style={{
-                          textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
-                        }}
+                      className={`text-[15px] text-justify text-black whitespace-pre-line ${
+                        page.certificateTitle.includes('ACCEPTANCE')
+                          ? 'leading-[1.5] mb-3'
+                          : 'leading-[1.8] mb-8'
+                      }`}
+                      style={{
+                        textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
+                      }}
                       dangerouslySetInnerHTML={{
                         __html: parseContent(page.certificateContent, page),
                       }}
                     />
 
-                    {/* Attendance Section */}
                     {page.certificateTitle.includes('ATTENDANCE') && (
                       <div className="mt-6 text-[16px] leading-[1.8] text-black">
-                        <p className="mb-3 font-bold uppercase text-left">          Attendance Details
-                        </p>
+                        <p className="mb-3 font-bold uppercase text-left">Attendance Details</p>
                         <div className="space-y-1 ml-4 text-left">
                           <p><span className="font-bold">Total No. of Days Allotted:</span> {page.attendanceTotalDays}</p>
                           <p><span className="font-bold">No. of Days Attended:</span> {page.attendanceDaysAttended}</p>
@@ -572,7 +638,6 @@ const App: React.FC = () => {
                       </div>
                     )}
 
-                    {/* Wish Message */}
                     {!page.certificateTitle.includes('ACCEPTANCE') && (
                       <p
                         className="mt-8 text-left text-[17px] leading-[1.8] text-black font-normal"
@@ -583,19 +648,18 @@ const App: React.FC = () => {
                     )}
                   </div>
 
-                  {/* 4. Signature Section - Fixed gap from content */}
-                  {/* Neenga content koraika koraika, intha section auto-va mela yerum */}
                   <div
                     className={`flex flex-col ${page.certificateTitle.includes('ACCEPTANCE')
                       ? 'items-start mt-6'
                       : 'items-end mt-16'
-                      }`}
-                  >                <div
-                    className={`${page.certificateTitle.includes('ACCEPTANCE')
-                      ? 'text-left'
-                      : 'pr-4 text-center'
-                      }`}
+                    }`}
                   >
+                    <div
+                      className={`${page.certificateTitle.includes('ACCEPTANCE')
+                        ? 'text-left'
+                        : 'pr-4 text-center'
+                      }`}
+                    >
                       {page.signatureImage && (
                         <img
                           src={page.signatureImage}
@@ -611,7 +675,6 @@ const App: React.FC = () => {
                           <p className="text-[13px]">
                             Director
                           </p>
-
                         </>
                       ) : (
                         <p className="text-[15px] font-bold uppercase">
