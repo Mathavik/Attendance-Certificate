@@ -75,12 +75,8 @@ We are pleased to inform you that you have been selected to undergo an {{interns
 • **Department:** {{department}}  
 • **Internship Duration: ** {{from Date}} to {{to Date}}  
 • **College:** {{college Name}}  
-• **Reporting Manager:** {{reporting Manager}}  
-• **Location:** {{location}}  
 
-This internship will provide both practical exposure and guided project work under the mentorship of our professional team. The project work will be aligned with your academic requirements and is expected to meet university standards.
-
-You are expected to maintain professional conduct and adhere to the rules and confidentiality policies of our company during the internship period.
+This internship offers practical exposure and guided project work under professional mentorship, aligned with academic requirements and university standards. You are also expected to maintain professional conduct and follow company rules and confidentiality policies throughout the internship.
 
 Upon successful completion, you will receive an {{internship Completion Title}} and a **Project Evaluation Letter**.
 
