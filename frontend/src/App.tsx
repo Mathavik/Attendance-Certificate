@@ -138,18 +138,18 @@ const App: React.FC = () => {
       .replace(/{{location}}/g, locationText);
 
     // Remove empty bullet points if fields are hidden
-    if (page.hidePosition) {
-      parsed = parsed.replace(/•\s*\*\*Position:\*\*\s*\n?/g, '');
-    }
-    if (page.hideDepartment) {
-      parsed = parsed.replace(/•\s*\*\*Department:\*\*\s*\n?/g, '');
-    }
-    if (page.hideReportingManager) {
-      parsed = parsed.replace(/•\s*\*\*Reporting Manager:\*\*\s*\n?/g, '');
-    }
-    if (page.hideLocation) {
-      parsed = parsed.replace(/•\s*\*\*Location:\*\*\s*\n?/g, '');
-    }
+  if (page.hidePosition) {
+  parsed = parsed.replace(/.*\*\*Position:\*\*.*\n?/g, '');
+}
+if (page.hideDepartment) {
+  parsed = parsed.replace(/.*\*\*Department:\*\*.*\n?/g, '');
+}
+if (page.hideReportingManager) {
+  parsed = parsed.replace(/.*\*\*Reporting Manager:\*\*.*\n?/g, '');
+}
+if (page.hideLocation) {
+  parsed = parsed.replace(/.*\*\*Location:\*\*.*\n?/g, '');
+}
 
     // Clean up multiple consecutive newlines
     parsed = parsed.replace(/\n\s*\n\s*\n/g, '\n\n');
