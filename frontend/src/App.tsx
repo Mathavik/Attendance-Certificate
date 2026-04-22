@@ -74,6 +74,8 @@ We are pleased to inform you that you have been selected to undergo an {{interns
 • **Department:** {{department}}
 • **Internship Duration:** {{from Date}} to {{to Date}}
 • **College:** {{college Name}}
+• **Reporting Manager:** {{reportingManager}}
+• **Location:** {{location}}
 
 This internship offers practical exposure and guided project work under professional mentorship, aligned with academic requirements and university standards. You are also expected to maintain professional conduct and follow company rules and confidentiality policies throughout the internship.
 
@@ -119,12 +121,11 @@ const App: React.FC = () => {
       // already fixed
       .replace(/{{position}}/g, `${page.position}`)
       .replace(/{{department}}/g, `${page.department}`)
-      .replace(/{{reporting Manager}}/g, `${page.reportingManager}`)
+      .replace(/{{reportingManager}}/g, `${page.reportingManager}`)
       .replace(/{{location}}/g, `${page.location}`);
 
     // markdown bold support
     parsed = parsed.replace(/\*\*(.*?)\*\*/g, `<strong>$1</strong>`);
-
     return parsed;
   };
 
