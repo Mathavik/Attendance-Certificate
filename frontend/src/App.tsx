@@ -79,7 +79,7 @@ We are pleased to inform you that you have been selected to undergo an {{interns
 
 This internship offers practical exposure and guided project work under professional mentorship, aligned with academic requirements and university standards. You are also expected to maintain professional conduct and follow company rules and confidentiality policies throughout the internship.
 
-Upon successful completion, you will receive an Internship Completion Certificate and a Project Evaluation Letter, and we look forward to supporting your academic and professional growth.
+Upon successful completion, you will receive an {{internship Completion Title}} and a **Project Evaluation Letter**, and we look forward to supporting your academic and professional growth.
 
 Warm regards,
 
