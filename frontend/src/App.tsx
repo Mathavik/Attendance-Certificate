@@ -648,10 +648,11 @@ const App: React.FC = () => {
 
                   <div>
                     <div
-                      className={`text-[15px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
-                        ? 'leading-[1.5] mb-3'
-                        : 'leading-[1.8] mb-8'
-                        }`}
+  className={`${
+    page.certificateTitle.includes('ACCEPTANCE')
+      ? 'text-[15px] leading-[1.5] mb-3'
+      : 'text-[18px] leading-[1.9] mb-8'
+  } text-justify text-black whitespace-pre-line`}
                       style={{
                         textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
                       }}
