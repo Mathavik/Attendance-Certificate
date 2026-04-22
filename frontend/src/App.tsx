@@ -364,7 +364,7 @@ const App: React.FC = () => {
                                       onChange={(e) => handleChange(index, 'hidePosition', e.target.checked)}
                                       className="w-3 h-3"
                                     />
-                                    Hide from certificate
+                                    
                                   </label>
                                 </div>
                                 <input
@@ -386,7 +386,7 @@ const App: React.FC = () => {
                                       onChange={(e) => handleChange(index, 'hideDepartment', e.target.checked)}
                                       className="w-3 h-3"
                                     />
-                                    Hide from certificate
+                                    {/* Hide from certificate */}
                                   </label>
                                 </div>
                                 <input
@@ -399,7 +399,8 @@ const App: React.FC = () => {
 
                               {/* REPORTING MANAGER with Hide Checkbox */}
                               <div>
-                                <div className="flex items-center justify-between">
+                                {/* <div className="flex items-center justify-between"> */}
+                                <div className="flex items-center gap-2">
                                   <label className="block text-[10px] font-bold uppercase">Reporting Manager</label>
                                   <label className="flex items-center gap-1 text-[9px]">
                                     <input
@@ -408,7 +409,7 @@ const App: React.FC = () => {
                                       onChange={(e) => handleChange(index, 'hideReportingManager', e.target.checked)}
                                       className="w-3 h-3"
                                     />
-                                    Hide from certificate
+                                    {/* Hide from certificate */}
                                   </label>
                                 </div>
                                 <input
@@ -430,7 +431,7 @@ const App: React.FC = () => {
                                       onChange={(e) => handleChange(index, 'hideLocation', e.target.checked)}
                                       className="w-3 h-3"
                                     />
-                                    Hide from certificate
+                                    {/* Hide from certificate */}
                                   </label>
                                 </div>
                                 <input
@@ -442,7 +443,7 @@ const App: React.FC = () => {
                               </div>
 
                               <div>
-                                <label className="block text-[10px] font-bold uppercase">Internship Completion Title</label>
+                                <label className="block text-[10px] font-bold uppercase">Internship Completion</label>
                                 <input
                                   value={page.internshipCompletionTitle}
                                   onChange={(e) => handleChange(index, 'internshipCompletionTitle', e.target.value)}
