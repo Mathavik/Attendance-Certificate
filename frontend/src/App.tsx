@@ -70,17 +70,14 @@ const defaultPages: CertificateFields[] = [
 We are pleased to inform you that you have been selected to undergo an {{internship Title}} at **PCS Software Solutions**, as part of your academic curriculum.
 
 **Internship & Project Details:**
-
-• **Position:** {{position}}  
-• **Department:** {{department}}  
-• **Internship Duration: ** {{from Date}} to {{to Date}}  
-• **College:** {{college Name}}  
+• **Position:** {{position}}
+• **Department:** {{department}}
+• **Internship Duration:** {{from Date}} to {{to Date}}
+• **College:** {{college Name}}
 
 This internship offers practical exposure and guided project work under professional mentorship, aligned with academic requirements and university standards. You are also expected to maintain professional conduct and follow company rules and confidentiality policies throughout the internship.
 
-Upon successful completion, you will receive an {{internship Completion Title}} and a **Project Evaluation Letter**.
-
-We look forward to working with you and supporting your academic and professional growth.
+Upon successful completion, you will receive an Internship Completion Certificate and a Project Evaluation Letter, and we look forward to supporting your academic and professional growth.
 
 Warm regards,
 
@@ -530,8 +527,8 @@ const App: React.FC = () => {
                     backgroundPosition: 'center',
                     fontFamily: "'Times New Roman', serif",
                     padding: page.certificateTitle.includes('ACCEPTANCE')
-                      ? '150px 80px 60px 80px'
-                      : '180px 90px 80px 90px', boxSizing: 'border-box'
+  ? '150px 80px 60px 80px'
+  : '180px 90px 80px 90px'
                   }}
                 >
                   {/* 1. Date */}
@@ -540,7 +537,7 @@ const App: React.FC = () => {
                   </div>
 
                   {/* 2. Title */}
-                  <div className="text-center mb-8">
+                  <div className="text-center mb-2">
                     <h2 className="text-[20px] font-bold border-b-2 border-black inline-block pb-2 mb-2 uppercase tracking-tight">      {page.certificateTitle}
                     </h2>
                   </div>
@@ -549,10 +546,11 @@ const App: React.FC = () => {
                   <div>
                     {/* Body Content */}
                     <div
-                      className={`text-[15px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
-                        ? 'leading-[1.6] mb-4'
-                        : 'leading-[1.8] mb-8'
-                        }`} style={{
+  className={`text-[15px] text-justify text-black whitespace-pre-line ${
+    page.certificateTitle.includes('ACCEPTANCE')
+      ? 'leading-[1.5] mb-3'
+      : 'leading-[1.8] mb-8'
+  }`} style={{
                           textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
                         }}
                       dangerouslySetInnerHTML={{
