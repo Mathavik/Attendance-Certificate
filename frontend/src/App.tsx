@@ -41,7 +41,7 @@ const defaultFields: CertificateFields = {
   certificateContent:
     'This is to certify that {{student Name}} final year M.Sc Computer Science student of {{college Name}} has successfully attended the project work titled "{{project Title}}" at Pavitha Consultancy Services from {{from Date}} to {{to Date}}. During this period, the student was present and actively participated in all the scheduled sessions. The student has demonstrated consistent attendance and engagement throughout the period.',
 
-  signatoryTitle: 'For PAVITHA CONSULTANCY SERVICES PVT LTD',
+  signatoryTitle: 'For PCS Software Solutions',
   attendanceTotalDays: '84 (exclude Sundays and other government holidays)',
   attendanceDaysAttended: '73',
   attendancePercentage: '87%',
@@ -90,7 +90,7 @@ Upon successful completion, you will receive an {{internship Completion Title}} 
 
 Warm regards,
 
-**For PCS Software Solutions**`
+**FOR PCS SOFTWARE SOLUTIONS**`
   }
 ];
 
