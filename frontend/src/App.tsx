@@ -46,7 +46,7 @@ const defaultFields: CertificateFields = {
   attendanceDaysAttended: '73',
   attendancePercentage: '87%',
   signatureImage: "/images/signature.png",
-  wishMessage: "We wish every success in her future career.",
+  wishMessage: "We wish every success in their future career.",
   internshipTitle: "Internship cum College Project",
   internshipCompletionTitle: "Internship Completion Certificate",
   position: "Intern – Project Trainee",
