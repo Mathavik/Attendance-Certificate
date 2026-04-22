@@ -400,8 +400,7 @@ if (page.hideLocation) {
                               {/* REPORTING MANAGER with Hide Checkbox */}
                               <div>
                                 {/* <div className="flex items-center justify-between"> */}
-                                <div className="flex items-center gap-2">
-                                  <label className="block text-[10px] font-bold uppercase">Reporting Manager</label>
+<div className="flex items-center justify-between">                                  <label className="block text-[10px] font-bold uppercase">Reporting Manager</label>
                                   <label className="flex items-center gap-1 text-[9px]">
                                     <input
                                       type="checkbox"
