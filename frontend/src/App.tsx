@@ -673,8 +673,7 @@ const App: React.FC = () => {
 
                     {!page.certificateTitle.includes('ACCEPTANCE') && (
                       <p
-                        className="mt-8 text-left text-[17px] leading-[1.8] text-black font-normal"
-                        dangerouslySetInnerHTML={{
+className="mt-8 text-center text-[17px] leading-[1.8] text-black font-normal"                        dangerouslySetInnerHTML={{
                           __html: page.wishMessage.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
                         }}
                       />
