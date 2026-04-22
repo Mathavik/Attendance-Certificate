@@ -98,7 +98,14 @@ const App: React.FC = () => {
   const [pagesData, setPagesData] = useState<CertificateFields[]>(defaultPages);
   const pageRefs = useRef<Array<HTMLElement | null>>([]);
   const textareaRefs = useRef<Array<HTMLTextAreaElement | null>>([]);
-
+  const [selectedPages, setSelectedPages] = useState<number[]>([0, 1, 2]);
+  const togglePageSelection = (index: number) => {
+    setSelectedPages((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index)
+        : [...prev, index]
+    );
+  };
   const parseContent = (content: string, page: CertificateFields) => {
     let parsed = content;
 
@@ -138,18 +145,18 @@ const App: React.FC = () => {
       .replace(/{{location}}/g, locationText);
 
     // Remove empty bullet points if fields are hidden
-  if (page.hidePosition) {
-  parsed = parsed.replace(/.*\*\*Position:\*\*.*\n?/g, '');
-}
-if (page.hideDepartment) {
-  parsed = parsed.replace(/.*\*\*Department:\*\*.*\n?/g, '');
-}
-if (page.hideReportingManager) {
-  parsed = parsed.replace(/.*\*\*Reporting Manager:\*\*.*\n?/g, '');
-}
-if (page.hideLocation) {
-  parsed = parsed.replace(/.*\*\*Location:\*\*.*\n?/g, '');
-}
+    if (page.hidePosition) {
+      parsed = parsed.replace(/.*\*\*Position:\*\*.*\n?/g, '');
+    }
+    if (page.hideDepartment) {
+      parsed = parsed.replace(/.*\*\*Department:\*\*.*\n?/g, '');
+    }
+    if (page.hideReportingManager) {
+      parsed = parsed.replace(/.*\*\*Reporting Manager:\*\*.*\n?/g, '');
+    }
+    if (page.hideLocation) {
+      parsed = parsed.replace(/.*\*\*Location:\*\*.*\n?/g, '');
+    }
 
     // Clean up multiple consecutive newlines
     parsed = parsed.replace(/\n\s*\n\s*\n/g, '\n\n');
@@ -189,14 +196,21 @@ if (page.hideLocation) {
     );
   };
 
-  const downloadBothPDF = async () => {
+  const downloadSelectedPDF = async () => {
+    if (selectedPages.length === 0) {
+      alert("Please select at least one certificate");
+      return;
+    }
+
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
       format: 'a4',
     });
 
-    for (let i = 0; i < pageRefs.current.length; i++) {
+    let isFirstPage = true;
+
+    for (let i of selectedPages) {
       const page = pageRefs.current[i];
       if (!page) continue;
 
@@ -210,14 +224,15 @@ if (page.hideLocation) {
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      if (i !== 0) {
+      if (!isFirstPage) {
         pdf.addPage();
       }
 
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      isFirstPage = false;
     }
 
-    pdf.save(`Certificates_${pagesData[0].studentName}.pdf`);
+    pdf.save(`Certificates_Selected.pdf`);
   };
 
   const downloadSinglePDF = async (index: number) => {
@@ -364,7 +379,7 @@ if (page.hideLocation) {
                                       onChange={(e) => handleChange(index, 'hidePosition', e.target.checked)}
                                       className="w-3 h-3"
                                     />
-                                    
+
                                   </label>
                                 </div>
                                 <input
@@ -400,7 +415,7 @@ if (page.hideLocation) {
                               {/* REPORTING MANAGER with Hide Checkbox */}
                               <div>
                                 {/* <div className="flex items-center justify-between"> */}
-<div className="flex items-center justify-between">                                  <label className="block text-[10px] font-bold uppercase">Reporting Manager</label>
+                                <div className="flex items-center justify-between">                                  <label className="block text-[10px] font-bold uppercase">Reporting Manager</label>
                                   <label className="flex items-center gap-1 text-[9px]">
                                     <input
                                       type="checkbox"
@@ -566,9 +581,28 @@ if (page.hideLocation) {
                 ))}
               </div>
 
-              <button type="button" onClick={downloadBothPDF} className="w-full rounded-lg bg-blue-900 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-lg">
-                DOWNLOAD PDF (BOTH PAGES)
-              </button>
+              <div className="space-y-3">
+                <div className="flex gap-4 justify-center">
+                  {pagesData.map((_, index) => (
+                    <label key={index} className="flex items-center gap-1 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={selectedPages.includes(index)}
+                        onChange={() => togglePageSelection(index)}
+                      />
+                      Certificate {index + 1}
+                    </label>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={downloadSelectedPDF}
+                  className="w-full rounded-lg bg-blue-900 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-lg"
+                >
+                  DOWNLOAD SELECTED PDF
+                </button>
+              </div>
             </form>
           </div>
 
@@ -614,11 +648,10 @@ if (page.hideLocation) {
 
                   <div>
                     <div
-                      className={`text-[15px] text-justify text-black whitespace-pre-line ${
-                        page.certificateTitle.includes('ACCEPTANCE')
-                          ? 'leading-[1.5] mb-3'
-                          : 'leading-[1.8] mb-8'
-                      }`}
+                      className={`text-[15px] text-justify text-black whitespace-pre-line ${page.certificateTitle.includes('ACCEPTANCE')
+                        ? 'leading-[1.5] mb-3'
+                        : 'leading-[1.8] mb-8'
+                        }`}
                       style={{
                         textIndent: page.certificateTitle.includes('ACCEPTANCE') ? "0px" : "40px"
                       }}
@@ -652,13 +685,13 @@ if (page.hideLocation) {
                     className={`flex flex-col ${page.certificateTitle.includes('ACCEPTANCE')
                       ? 'items-start mt-6'
                       : 'items-end mt-16'
-                    }`}
+                      }`}
                   >
                     <div
                       className={`${page.certificateTitle.includes('ACCEPTANCE')
                         ? 'text-left'
                         : 'pr-4 text-center'
-                      }`}
+                        }`}
                     >
                       {page.signatureImage && (
                         <img
