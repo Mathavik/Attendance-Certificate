@@ -97,7 +97,7 @@ const App: React.FC = () => {
   const pageRefs = useRef<Array<HTMLElement | null>>([]);
   const textareaRefs = useRef<Array<HTMLTextAreaElement | null>>([]);
   const [selectedPages, setSelectedPages] = useState<number[]>([0, 1, 2]);
-  
+
   const togglePageSelection = (index: number) => {
     setSelectedPages((prev) =>
       prev.includes(index)
@@ -185,37 +185,36 @@ const App: React.FC = () => {
       return;
     }
 
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-    });
-
-    let isFirstPage = true;
-
+    // Loop through each selected page and generate a separate PDF for each
     for (let i of selectedPages) {
       const page = pageRefs.current[i];
       if (!page) continue;
 
+      // Create a NEW jsPDF instance for every single certificate
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
       const canvas = await html2canvas(page, {
-        scale: 2,
+        scale: 1.5, 
         useCORS: true,
         backgroundColor: '#ffffff',
       });
 
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.75);
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      if (!isFirstPage) {
-        pdf.addPage();
-      }
-
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      isFirstPage = false;
+      // Add the image to the current PDF instance
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+      
+      // Save the PDF immediately with a unique name
+      // Title matrum Student Name vechu file name create pannuvom
+      const fileName = `${pagesData[i].certificateTitle.replace(/\s+/g, '_')}_${pagesData[i].studentName.replace(/\s+/g, '_')}.pdf`;
+      pdf.save(fileName);
     }
-
-    pdf.save(`Certificates_Selected.pdf`);
   };
 
   const downloadSinglePDF = async (index: number) => {
@@ -229,17 +228,19 @@ const App: React.FC = () => {
         format: 'a4',
       });
 
+      // ... existing code in downloadSinglePDF
       const canvas = await html2canvas(page, {
-        scale: 2,
+        scale: 1.5, // Scale 2-kku bathulaa 1.5 safe-aa irukkum
         useCORS: true,
         backgroundColor: '#ffffff',
       });
 
-      const imgData = canvas.toDataURL('image/png');
+      // JPEG with 0.75 quality (Indha number-a kuraikka kuraikka size innum kuraiyum)
+      const imgData = canvas.toDataURL('image/jpeg', 0.75);
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       pdf.save(`${pagesData[index].certificateTitle}_${pagesData[index].studentName}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -499,17 +500,17 @@ const App: React.FC = () => {
         {page.certificateTitle.includes('ATTENDANCE') && (
           <div className="p-3 bg-white border rounded space-y-2">
             <label className="block text-[10px] font-bold text-blue-600 uppercase">Attendance Stats</label>
-            <input 
-              placeholder="Total Days" 
-              value={page.attendanceTotalDays} 
-              onChange={(e) => handleChange(index, 'attendanceTotalDays', e.target.value)} 
-              className="w-full border-b py-1 text-xs outline-none" 
+            <input
+              placeholder="Total Days"
+              value={page.attendanceTotalDays}
+              onChange={(e) => handleChange(index, 'attendanceTotalDays', e.target.value)}
+              className="w-full border-b py-1 text-xs outline-none"
             />
-            <input 
-              placeholder="Days Attended" 
-              value={page.attendanceDaysAttended} 
-              onChange={(e) => handleChange(index, 'attendanceDaysAttended', e.target.value)} 
-              className="w-full border-b py-1 text-xs outline-none" 
+            <input
+              placeholder="Days Attended"
+              value={page.attendanceDaysAttended}
+              onChange={(e) => handleChange(index, 'attendanceDaysAttended', e.target.value)}
+              className="w-full border-b py-1 text-xs outline-none"
             />
             <input
               placeholder="Percentage"
@@ -538,7 +539,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-slate-100 px-4 py-10">
       <div className="mx-auto max-w-[1400px]">
         <div className="flex flex-col gap-12">
-          
+
           {/* Certificate 1 - Attendance Certificate */}
           <div className="grid gap-6 lg:grid-cols-[400px_1fr] border-b pb-8">
             {renderCertificateInputs(pagesData[0], 0)}
