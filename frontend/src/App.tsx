@@ -203,7 +203,7 @@ const App: React.FC = () => {
         backgroundColor: '#ffffff',
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.75);
+      const imgData = canvas.toDataURL('image/jpeg', 0.5);
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -236,7 +236,7 @@ const App: React.FC = () => {
       });
 
       // JPEG with 0.75 quality (Indha number-a kuraikka kuraikka size innum kuraiyum)
-      const imgData = canvas.toDataURL('image/jpeg', 0.75);
+      const imgData = canvas.toDataURL('image/jpeg', 0.5);
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
