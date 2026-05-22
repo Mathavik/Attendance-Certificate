@@ -1,0 +1,10 @@
+# Ignore all node_modules everywhere
+**/node_modules/
+
+# Ignore environment variables
+.env
+.env.local
+.env.*.local
+
+# Ignore uploaded images
+backend/src/uploads/
