@@ -11,6 +11,21 @@ export const createCertificate = async (req: Request, res: Response) => {
   }
 };
 
+export const updateCertificate = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const certificate = await Certificate.findByPk(id);
+    if (!certificate) {
+      return res.status(404).json({ message: "Certificate not found." });
+    }
+    await certificate.update(req.body);
+    return res.json(certificate);
+  } catch (error) {
+    console.error("Certificate update error:", error);
+    return res.status(500).json({ message: "Unable to update certificate." });
+  }
+};
+
 export const getCertificates = async (_req: Request, res: Response) => {
   try {
     const certificates = await Certificate.findAll({ order: [["createdAt", "DESC"]] });

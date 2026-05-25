@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { SavedCertificate } from '../pages/certificate';
+// 1. Import toast and Toaster
+import toast, { Toaster } from 'react-hot-toast';
 
 type AdminDashboardProps = {
   certificateStats: Array<{ certificateTitle: string; count: number }>;
@@ -17,23 +19,34 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onLoadIntoEditor,
 }) => {
   const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState<string>(''); // Month filter state
-  const [selectedYear, setSelectedYear] = useState<string>('');   // Year filter state
+  const [selectedMonth, setSelectedMonth] = useState<string>(''); 
+  const [selectedYear, setSelectedYear] = useState<string>('');   
+  
+  const [isMonthOpen, setIsMonthOpen] = useState(false);
+  const [isYearOpen, setIsYearOpen] = useState(false);
 
-  // 1. Available Years - DD.MM.YYYY string-il irunthu split panni unique values edukirom
+  // Load button click handler with Toast
+  const handleLoadClick = (certificate: SavedCertificate) => {
+    onLoadIntoEditor(certificate);
+    // Student பெயர் அல்லது ID-ஐ வைத்து Toast message-ஐக் காண்பிக்கிறோம்
+    toast.success(`${certificate.studentName || 'Certificate'} loaded successfully!`, {
+      duration: 3000,
+      position: 'top-right',
+    });
+  };
+
   const availableYears = Array.from(
     new Set(
       adminCertificates
         .map((c) => {
           if (!c.date) return null;
-          const parts = c.date.split('.'); // [ "30", "03", "2026" ]
-          return parts.length === 3 ? parts[2] : null; // Year-ah mattum thookrom
+          const parts = c.date.split('.'); 
+          return parts.length === 3 ? parts[2] : null; 
         })
         .filter((year): year is string => year !== null)
     )
   ).sort();
 
-  // Month list labels
   const monthsList = [
     { value: '01', label: 'January' },
     { value: '02', label: 'February' },
@@ -49,18 +62,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     { value: '12', label: 'December' },
   ];
 
-  // 2. Main Filtering Logic - Direct String Splitting
   const filteredCertificates = adminCertificates.filter((c) => {
-    // 🛑 KEEZHA IRUKURA TABLE DATA-LA ATTENDANCE CERTIFICATE VENDAAM
     if (c.certificateTitle === 'ATTENDANCE CERTIFICATE') return false;
-
     if (!c.date) return false;
     
-    const parts = c.date.split('.'); // split by dot
+    const parts = c.date.split('.'); 
     if (parts.length !== 3) return false;
 
-    const certMonth = parts[1]; // '03'
-    const certYear = parts[2];  // '2026'
+    const certMonth = parts[1]; 
+    const certYear = parts[2];  
 
     const matchesTitle = selectedTitle ? c.certificateTitle === selectedTitle : true;
     const matchesYear = selectedYear ? certYear === selectedYear : true;
@@ -69,7 +79,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     return matchesTitle && matchesYear && matchesMonth;
   });
 
-  // Ellaa filter-aiyum reset panna handy function
   const clearAllFilters = () => {
     setSelectedTitle(null);
     setSelectedMonth('');
@@ -78,6 +87,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+      {/* 2. Add Toaster Component at the root level of your return JSX */}
+      <Toaster />
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-bold">Admin Dashboard</h2>
@@ -89,34 +101,78 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       </div>
 
-      {/* Date Filters (Month & Year Dropdowns) */}
-      <div className="mt-6 flex flex-wrap items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-        <div className="flex flex-col gap-1">
+      {/* Date Filters */}
+      <div className="mt-6 flex flex-wrap items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 z-50 relative">
+        {/* YEAR FILTER */}
+        <div className="flex flex-col gap-1 relative">
           <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Filter Year</label>
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none"
+          <button
+            type="button"
+            onClick={() => { setIsYearOpen(!isYearOpen); setIsMonthOpen(false); }}
+            className="flex items-center justify-between w-40 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none text-left"
           >
-            <option value="">All Years</option>
-            {availableYears.map((year) => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
+            <span>{selectedYear ? selectedYear : 'All Years'}</span>
+            <span className="text-xs text-slate-400">▼</span>
+          </button>
+
+          {isYearOpen && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setIsYearOpen(false)} />
+              <div className="absolute top-full left-0 mt-1 w-40 max-h-48 overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl z-20 py-1">
+                <button
+                  onClick={() => { setSelectedYear(''); setIsYearOpen(false); }}
+                  className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-100 ${selectedYear === '' ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-700'}`}
+                >
+                  All Years
+                </button>
+                {availableYears.map((year) => (
+                  <button
+                    key={year}
+                    onClick={() => { setSelectedYear(year); setIsYearOpen(false); }}
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-100 ${selectedYear === year ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-700'}`}
+                  >
+                    {year}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        <div className="flex flex-col gap-1">
+        {/* MONTH FILTER */}
+        <div className="flex flex-col gap-1 relative">
           <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Filter Month</label>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none"
+          <button
+            type="button"
+            onClick={() => { setIsMonthOpen(!isMonthOpen); setIsYearOpen(false); }}
+            className="flex items-center justify-between w-44 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none text-left"
           >
-            <option value="">All Months</option>
-            {monthsList.map((m) => (
-              <option key={m.value} value={m.value}>{m.label}</option>
-            ))}
-          </select>
+            <span>{selectedMonth ? monthsList.find(m => m.value === selectedMonth)?.label : 'All Months'}</span>
+            <span className="text-xs text-slate-400">▼</span>
+          </button>
+
+          {isMonthOpen && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setIsMonthOpen(false)} />
+              <div className="absolute top-full left-0 mt-1 w-44 max-h-48 overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl z-20 py-1">
+                <button
+                  onClick={() => { setSelectedMonth(''); setIsMonthOpen(false); }}
+                  className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-100 ${selectedMonth === '' ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-700'}`}
+                >
+                  All Months
+                </button>
+                {monthsList.map((m) => (
+                  <button
+                    key={m.value}
+                    onClick={() => { setSelectedMonth(m.value); setIsMonthOpen(false); }}
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-100 ${selectedMonth === m.value ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-700'}`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         {(selectedTitle || selectedYear || selectedMonth) && (
@@ -133,7 +189,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {certificateStats.length > 0 && (
         <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
           {certificateStats
-            .filter((stat) => stat.certificateTitle !== 'ATTENDANCE CERTIFICATE') // 🛑 STATS CARD-LAYUM VENDAAM
+            .filter((stat) => stat.certificateTitle !== 'ATTENDANCE CERTIFICATE') 
             .map((stat) => (
               <div
                 key={stat.certificateTitle}
@@ -161,7 +217,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       ) : (
         <div className="mt-4 overflow-x-auto">
-          {/* Active Filter Indicators */}
           {(selectedTitle || selectedYear || selectedMonth) && (
             <div className="mb-3 flex items-center justify-between bg-blue-50/50 px-3 py-2 rounded-lg text-sm text-slate-700">
               <div className="flex flex-wrap gap-2 items-center">
@@ -201,7 +256,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <td className="px-3 py-2">{c.toDate}</td>
                   <td className="px-3 py-2 font-medium text-slate-600">{c.date}</td>
                   <td className="px-3 py-2">
-                    <button onClick={() => onLoadIntoEditor(c)} className="text-xs bg-emerald-600 hover:bg-emerald-700 transition-colors text-white px-2 py-1 rounded">Load</button>
+                    {/* 3. Replaced onClick with handleLoadClick */}
+                    <button 
+                      onClick={() => handleLoadClick(c)} 
+                      className="text-xs bg-emerald-600 hover:bg-emerald-700 transition-colors text-white px-2 py-1 rounded"
+                    >
+                      Load
+                    </button>
                   </td>
                 </tr>
               ))}

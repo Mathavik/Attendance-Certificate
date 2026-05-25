@@ -107,6 +107,8 @@ const CertificateGenerator: React.FC = () => {
   const [adminCertificates, setAdminCertificates] = useState<SavedCertificate[]>([]);
   const [certificateStats, setCertificateStats] = useState<Array<{ certificateTitle: string; count: number }>>([]);
   const [saveStatus, setSaveStatus] = useState<string>("");
+  const [currentCertificateIds, setCurrentCertificateIds] = useState<Array<number | undefined>>([undefined, undefined, undefined]);
+  const [loadedCertificateId, setLoadedCertificateId] = useState<number | undefined>(undefined);
   const API_BASE = "http://localhost:5000/api";
 
   const togglePageSelection = (index: number) => {
@@ -165,18 +167,26 @@ const CertificateGenerator: React.FC = () => {
   const handleSaveCertificate = async (index: number) => {
     const page = pagesData[index];
     const payload = { ...page };
+    const existingId = currentCertificateIds[index];
+    const isEdit = existingId !== undefined;
+    const method = isEdit ? "PUT" : "POST";
+    const endpoint = isEdit ? `${API_BASE}/certificates/${existingId}` : `${API_BASE}/certificates`;
 
     try {
-      setSaveStatus("Saving...");
-      const res = await fetch(`${API_BASE}/certificates`, {
-        method: "POST",
+      setSaveStatus(isEdit ? "Updating..." : "Saving...");
+      const res = await fetch(endpoint, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error("Save failed");
       const saved = await res.json();
-      setSaveStatus(`Saved id=${saved.id}`);
-      // Optionally refresh admin list
+      setSaveStatus(`${isEdit ? 'Updated' : 'Saved'} id=${saved.id}`);
+      setCurrentCertificateIds((prev) => {
+        const updated = [...prev];
+        updated[index] = isEdit ? undefined : saved.id;
+        return updated;
+      });
       await loadAdminCertificates();
     } catch (e) {
       console.error(e);
@@ -185,6 +195,14 @@ const CertificateGenerator: React.FC = () => {
   };
 
   const loadIntoEditor = (c: SavedCertificate) => {
+    // If a different certificate is already loaded, clear it first
+    if (loadedCertificateId !== undefined && loadedCertificateId !== c.id) {
+      // Clear all pages back to defaults
+      setPagesData(defaultPages);
+      setCurrentCertificateIds([undefined, undefined, undefined]);
+      setSelectedPages([0, 1, 2]);
+    }
+
     // Map certificate type to editor page index
     let pageIndex = 0;
     const title = (c.certificateTitle || "").toUpperCase();
@@ -222,7 +240,22 @@ const CertificateGenerator: React.FC = () => {
       } as CertificateFields;
       return copy;
     });
-    setSaveStatus(`Loaded id=${c.id} into editor`);
+    setCurrentCertificateIds((prev) => {
+      const copy = [...prev];
+      copy[pageIndex] = c.id;
+      return copy;
+    });
+    setSelectedPages((prev) => (prev.includes(pageIndex) ? prev : [...prev, pageIndex]));
+    setLoadedCertificateId(c.id);
+    setSaveStatus(`Loaded id=${c.id} into editor - Ready to Save`);
+
+    // Scroll to the loaded certificate with smooth behavior
+    setTimeout(() => {
+      const pageRef = pageRefs.current[pageIndex];
+      if (pageRef) {
+        pageRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   };
 
   const loadAdminCertificates = async () => {
@@ -343,13 +376,20 @@ const CertificateGenerator: React.FC = () => {
     return (
         <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4 h-fit sticky top-10">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider">✏️ EDIT {page.certificateTitle}</h3>
+            <div>
+              <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider">✏️ EDIT {page.certificateTitle}</h3>
+              {currentCertificateIds[index] !== undefined ? (
+                <p className="text-[10px] text-slate-500 mt-1">Editing saved certificate id={currentCertificateIds[index]}</p>
+              ) : (
+                <p className="text-[10px] text-slate-500 mt-1">New certificate will be created on save</p>
+              )}
+            </div>
             <button
               type="button"
               onClick={() => handleSaveCertificate(index)}
               className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
             >
-              💾 Save
+              {currentCertificateIds[index] !== undefined ? '🔄 Update' : '💾 Save'}
             </button>
           </div>
 
@@ -642,13 +682,13 @@ const CertificateGenerator: React.FC = () => {
           <div className="grid gap-6 lg:grid-cols-[400px_1fr] border-b pb-8">
             {renderCertificateInputs(pagesData[0], 0)}
             <div className="flex flex-col items-center gap-4">
-              <div className="w-full flex justify-end">
-                <button
+              <div className="py-6">
+                {/* <button
                   onClick={() => downloadSinglePDF(0)}
                   className="bg-blue-900 text-white text-xs px-4 py-2 rounded-full shadow-md hover:bg-blue-800 transition-all"
                 >
                   ⬇ Download Certificate 1
-                </button>
+                </button> */}
               </div>
               <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">CERTIFICATE 1 - ATTENDANCE CERTIFICATE</span>
               <section
@@ -713,13 +753,13 @@ const CertificateGenerator: React.FC = () => {
           <div className="grid gap-6 lg:grid-cols-[400px_1fr] border-b pb-8">
             {renderCertificateInputs(pagesData[1], 1)}
             <div className="flex flex-col items-center gap-4">
-              <div className="w-full flex justify-end">
-                <button
+              <div className="w-full flex justify-end py-2">
+                {/* <button
                   onClick={() => downloadSinglePDF(1)}
                   className="bg-blue-900 text-white text-xs px-4 py-2 rounded-full shadow-md hover:bg-blue-800 transition-all"
                 >
                   ⬇ Download Certificate 2
-                </button>
+                </button> */}
               </div>
               <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">CERTIFICATE 2 - PROJECT COMPLETION CERTIFICATE</span>
               <section
@@ -774,13 +814,13 @@ const CertificateGenerator: React.FC = () => {
           <div className="grid gap-6 lg:grid-cols-[400px_1fr] pb-8">
             {renderCertificateInputs(pagesData[2], 2)}
             <div className="flex flex-col items-center gap-4">
-              <div className="w-full flex justify-end">
-                <button
+              <div className="w-full flex justify-end py-2">
+                {/* <button
                   onClick={() => downloadSinglePDF(2)}
                   className="bg-blue-900 text-white text-xs px-4 py-2 rounded-full shadow-md hover:bg-blue-800 transition-all"
                 >
                   ⬇ Download Certificate 3
-                </button>
+                </button> */}
               </div>
               <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">CERTIFICATE 3 - ACCEPTANCE CERTIFICATE</span>
               <section
@@ -835,7 +875,7 @@ const CertificateGenerator: React.FC = () => {
           />
 
           {/* Download All Button */}
-          <div className="fixed bottom-6 right-6 z-50">
+          <div className="fixed top-6 right-6 z-50">
             <div className="bg-white rounded-lg shadow-xl p-4 border">
               <div className="flex gap-4 mb-3 justify-center">
                 {pagesData.map((_, index) => (
