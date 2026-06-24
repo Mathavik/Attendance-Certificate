@@ -43,3 +43,8 @@ Certificate.init(
 );
 
 export default Certificate;
+
+
+// ALTER TABLE certificate.certificates
+// ADD COLUMN projectTitle VARCHAR(255) NULL
+// AFTER certificateTitle;
