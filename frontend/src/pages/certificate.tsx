@@ -322,7 +322,7 @@ const CertificateGenerator: React.FC = () => {
       });
 
       const canvas = await html2canvas(page, {
-        scale: 1.5, 
+        scale: 1.5,
         useCORS: true,
         backgroundColor: '#ffffff',
       });
@@ -333,7 +333,7 @@ const CertificateGenerator: React.FC = () => {
 
       // Add the image to the current PDF instance
       pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
-      
+
       // Save the PDF immediately with a unique name
       // Title matrum Student Name vechu file name create pannuvom
       const fileName = `${pagesData[i].certificateTitle.replace(/\s+/g, '_')}_${pagesData[i].studentName.replace(/\s+/g, '_')}.pdf`;
@@ -374,24 +374,24 @@ const CertificateGenerator: React.FC = () => {
   // Function to render input fields for a specific certificate
   const renderCertificateInputs = (page: CertificateFields, index: number) => {
     return (
-        <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4 h-fit sticky top-10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider">✏️ EDIT {page.certificateTitle}</h3>
-              {currentCertificateIds[index] !== undefined ? (
-                <p className="text-[10px] text-slate-500 mt-1">Editing saved certificate id={currentCertificateIds[index]}</p>
-              ) : (
-                <p className="text-[10px] text-slate-500 mt-1">New certificate will be created on save</p>
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={() => handleSaveCertificate(index)}
-              className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
-            >
-              {currentCertificateIds[index] !== undefined ? '🔄 Update' : '💾 Save'}
-            </button>
+      <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4 h-fit sticky top-10">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider">✏️ EDIT {page.certificateTitle}</h3>
+            {currentCertificateIds[index] !== undefined ? (
+              <p className="text-[10px] text-slate-500 mt-1">Editing saved certificate id={currentCertificateIds[index]}</p>
+            ) : (
+              <p className="text-[10px] text-slate-500 mt-1">New certificate will be created on save</p>
+            )}
           </div>
+          <button
+            type="button"
+            onClick={() => handleSaveCertificate(index)}
+            className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+          >
+            {currentCertificateIds[index] !== undefined ? '🔄 Save' : '💾 Edit'}
+          </button>
+        </div>
 
         <div>
           <label className="block text-[10px] font-bold uppercase">Date</label>
@@ -866,7 +866,7 @@ const CertificateGenerator: React.FC = () => {
           </div>
 
           {/* Admin Dashboard */}
-          <AdminDashboard 
+          <AdminDashboard
             certificateStats={certificateStats}
             adminCertificates={adminCertificates}
             saveStatus={saveStatus}

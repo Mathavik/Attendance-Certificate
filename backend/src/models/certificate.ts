@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "./index";
 
-class Certificate extends Model {}
+class Certificate extends Model { }
 
 Certificate.init(
   {
@@ -11,6 +11,10 @@ Certificate.init(
     toDate: { type: DataTypes.STRING, allowNull: false },
     date: { type: DataTypes.STRING, allowNull: false },
     certificateTitle: { type: DataTypes.STRING, allowNull: false },
+    projectTitle: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     certificateContent: { type: DataTypes.TEXT, allowNull: true },
     signatoryTitle: { type: DataTypes.STRING, allowNull: true },
     attendanceTotalDays: { type: DataTypes.STRING, allowNull: true },
@@ -28,6 +32,7 @@ Certificate.init(
     hideLocation: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     wishMessage: { type: DataTypes.TEXT, allowNull: true },
     signatureImage: { type: DataTypes.TEXT, allowNull: true },
+
   },
   {
     sequelize,
