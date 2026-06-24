@@ -141,7 +141,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
         {/* MONTH FILTER */}
         <div className="flex flex-col gap-1 relative">
-          <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Filter Month</label>
+          <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Filter Month BY Date Feild</label>
           <button
             type="button"
             onClick={() => { setIsMonthOpen(!isMonthOpen); setIsYearOpen(false); }}
