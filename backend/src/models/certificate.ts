@@ -32,6 +32,15 @@ Certificate.init(
     hideLocation: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     wishMessage: { type: DataTypes.TEXT, allowNull: true },
     signatureImage: { type: DataTypes.TEXT, allowNull: true },
+    serialNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    qrCode: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true,
+    },
 
   },
   {

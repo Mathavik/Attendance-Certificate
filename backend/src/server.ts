@@ -12,7 +12,12 @@ const app = express();
 // Configure CORS to allow your React app to send credentials (like cookies)
 const corsOptions = {
   // Replace with the exact URL of your React app
-  origin: "http://localhost:3000",
+ origin: [
+    "http://localhost:3000",
+    "http://192.168.1.13:3000",   // add your IP-based origin
+    // add any other dev origins
+  ],
+  
   // This is required to allow cookies/credentials to be sent with requests
   credentials: true,
 };
@@ -30,7 +35,7 @@ app.use("/api/certificates", certificateRoutes);
     await sequelize.authenticate();
     await sequelize.sync(); // in dev you can use { alter: true }
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`✅ Server running on http://192.168.1.13:${PORT}`));
   } catch (e) {
     console.error("DB connection error:", e);
     process.exit(1);
