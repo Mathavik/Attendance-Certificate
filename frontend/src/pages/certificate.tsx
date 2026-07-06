@@ -1,8 +1,10 @@
+
+
 import React, { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import AdminDashboard from '../admin/AdminDashboard';
-
+import toast, { Toaster } from 'react-hot-toast';
 export type CertificateFields = {
   studentName: string;
   collegeName: string;
@@ -166,7 +168,13 @@ const CertificateGenerator: React.FC = () => {
 
   const handleSaveCertificate = async (index: number) => {
     const page = pagesData[index];
-    const payload = { ...page };
+    const payload = {
+  ...page,
+  certificateTitle: page.certificateTitle
+    .trim()
+    .replace(/\s+/g, " ")
+    .toUpperCase(),
+};
     const existingId = currentCertificateIds[index];
     const isEdit = existingId !== undefined;
     const method = isEdit ? "PUT" : "POST";
@@ -180,8 +188,20 @@ const CertificateGenerator: React.FC = () => {
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error("Save failed");
+
       const saved = await res.json();
+
       setSaveStatus(`${isEdit ? 'Updated' : 'Saved'} id=${saved.id}`);
+
+      toast.success(
+        isEdit
+          ? ' Certificate Updated Successfully!'
+          : ' Certificate Saved Successfully!',
+        {
+          duration: 3000,
+          position: 'top-right',
+        }
+      );
       setCurrentCertificateIds((prev) => {
         const updated = [...prev];
         updated[index] = isEdit ? undefined : saved.id;
@@ -191,6 +211,11 @@ const CertificateGenerator: React.FC = () => {
     } catch (e) {
       console.error(e);
       setSaveStatus("Save failed");
+
+      toast.error('❌ Save Failed!', {
+        duration: 3000,
+        position: 'top-right',
+      });
     }
   };
 
@@ -389,7 +414,7 @@ const CertificateGenerator: React.FC = () => {
             onClick={() => handleSaveCertificate(index)}
             className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
           >
-            {currentCertificateIds[index] !== undefined ? '🔄 Save' : '💾 Edit'}
+            💾 Save
           </button>
         </div>
 

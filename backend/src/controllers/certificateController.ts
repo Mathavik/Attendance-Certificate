@@ -38,11 +38,47 @@ export const getCertificates = async (_req: Request, res: Response) => {
 
 export const getStats = async (_req: Request, res: Response) => {
   try {
+    const sequelize = Certificate.sequelize!;
+
     const stats = await Certificate.findAll({
-      attributes: ["certificateTitle", [Certificate.sequelize!.fn("COUNT", Certificate.sequelize!.col("id")), "count"]],
-      group: ["certificateTitle"],
+      attributes: [
+        [
+          sequelize.fn(
+            "UPPER",
+            sequelize.fn(
+              "TRIM",
+              sequelize.fn(
+                "REPLACE",
+                sequelize.col("certificateTitle"),
+                "  ",
+                " "
+              )
+            )
+          ),
+          "certificateTitle",
+        ],
+        [
+          sequelize.fn("COUNT", sequelize.col("id")),
+          "count",
+        ],
+      ],
+      group: [
+        sequelize.fn(
+          "UPPER",
+          sequelize.fn(
+            "TRIM",
+            sequelize.fn(
+              "REPLACE",
+              sequelize.col("certificateTitle"),
+              "  ",
+              " "
+            )
+          )
+        ),
+      ],
       raw: true,
     });
+
     return res.json(stats);
   } catch (error) {
     console.error("Certificate stats error:", error);
