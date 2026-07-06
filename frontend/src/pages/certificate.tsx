@@ -444,10 +444,17 @@ const CertificateGenerator: React.FC = () => {
             Certificate Title
           </label>
           <input
-            value={page.certificateTitle}
-            onChange={(e) => handleChange(index, 'certificateTitle', e.target.value.toUpperCase())}
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
-          />
+  value={page.certificateTitle}
+  onChange={(e) => handleChange(index, "certificateTitle", e.target.value)}
+  onBlur={(e) =>
+    handleChange(
+      index,
+      "certificateTitle",
+      e.target.value.trim().replace(/\s+/g, " ").toUpperCase()
+    )
+  }
+  className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+/>
         </div>
 
         <div className="grid gap-3">
@@ -846,11 +853,23 @@ const CertificateGenerator: React.FC = () => {
                   </div>
                 </div>
                  {/* QR code */}
-    {qrCodes[1] && (
-      <div className="mt-4 self-end">
-        <img src={qrCodes[1]} alt="QR Code" className="w-24 h-24" />
-      </div>
-    )}
+   {qrCodes[1] && (
+  <div
+    style={{
+      marginTop: "-140px",
+      marginLeft: "-3px",
+    }}
+  >
+    <img
+      src={qrCodes[1]}
+      alt="QR Code"
+      style={{
+        width: "140px",
+        height: "140px",
+      }}
+    />
+  </div>
+)}
     
               </section>
             </div>
