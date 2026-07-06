@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import CertificateGenerator from "./pages/certificate";
+import VerifyCertificate from "./pages/VerifyCertificate";
 
 // import Ban from "./pages/eventsPage/ban";
 
@@ -25,6 +26,7 @@ function App() {
       {/* Page Routes */}
       <Routes>
         <Route path="/" element={<CertificateGenerator />} />
+         <Route path="/verify/:serialNumber" element={<VerifyCertificate />} />
       </Routes>
 
     </BrowserRouter>

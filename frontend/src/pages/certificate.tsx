@@ -36,8 +36,9 @@ export type SavedCertificate = CertificateFields & {
   id?: number;
   createdAt?: string;
   updatedAt?: string;
+    serialNumber?: string;
+  qrCode?: string; 
 };
-
 const defaultFields: CertificateFields = {
   studentName: "Ms SRIJANNADEVI V M",
   collegeName: "Rani Anna Government College for Women, Tirunelveli",
@@ -102,6 +103,8 @@ Warm regards,
 ];
 
 const CertificateGenerator: React.FC = () => {
+  const [qrCodes, setQrCodes] = useState<string[]>(['', '', '']); // index 0,1,2
+
   const [pagesData, setPagesData] = useState<CertificateFields[]>(defaultPages);
   const pageRefs = useRef<Array<HTMLElement | null>>([]);
   const textareaRefs = useRef<Array<HTMLTextAreaElement | null>>([]);
@@ -190,7 +193,11 @@ const CertificateGenerator: React.FC = () => {
       if (!res.ok) throw new Error("Save failed");
 
       const saved = await res.json();
-
+  setQrCodes((prev) => {
+    const copy = [...prev];
+    copy[index] = saved.qrCode || '';
+    return copy;
+  });
       setSaveStatus(`${isEdit ? 'Updated' : 'Saved'} id=${saved.id}`);
 
       toast.success(
@@ -273,7 +280,11 @@ const CertificateGenerator: React.FC = () => {
     setSelectedPages((prev) => (prev.includes(pageIndex) ? prev : [...prev, pageIndex]));
     setLoadedCertificateId(c.id);
     setSaveStatus(`Loaded id=${c.id} into editor - Ready to Save`);
-
+  setQrCodes((prev) => {
+    const copy = [...prev];
+    copy[pageIndex] = c.qrCode || '';
+    return copy;
+  });
     // Scroll to the loaded certificate with smooth behavior
     setTimeout(() => {
       const pageRef = pageRefs.current[pageIndex];
@@ -281,6 +292,7 @@ const CertificateGenerator: React.FC = () => {
         pageRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 100);
+  
   };
 
   const loadAdminCertificates = async () => {
@@ -800,6 +812,7 @@ const CertificateGenerator: React.FC = () => {
                   padding: '180px 90px 80px 90px'
                 }}
               >
+                
                 <div className="text-right text-[16px] font-bold text-black mb-6">
                   {pagesData[1].date}
                 </div>
@@ -808,6 +821,7 @@ const CertificateGenerator: React.FC = () => {
                     {pagesData[1].certificateTitle}
                   </h2>
                 </div>
+                
                 <div>
                   <div
                     className="text-[18px] leading-[1.9] mb-8 text-justify text-black whitespace-pre-line"
@@ -831,6 +845,13 @@ const CertificateGenerator: React.FC = () => {
                     <p className="text-[15px] font-bold uppercase">{pagesData[1].signatoryTitle}</p>
                   </div>
                 </div>
+                 {/* QR code */}
+    {qrCodes[1] && (
+      <div className="mt-4 self-end">
+        <img src={qrCodes[1]} alt="QR Code" className="w-24 h-24" />
+      </div>
+    )}
+    
               </section>
             </div>
           </div>
