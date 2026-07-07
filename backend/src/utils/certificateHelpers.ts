@@ -28,7 +28,7 @@ export async function generateQRCode(
 
   // Frontend URL
   const frontendUrl =
-    process.env.FRONTEND_URL || "http://192.168.1.13:3000";
+    process.env.FRONTEND_URL || "http://192.168.1.5:3000";
 
   const verifyUrl = `${frontendUrl}/verify/${serialNumber}`;
 

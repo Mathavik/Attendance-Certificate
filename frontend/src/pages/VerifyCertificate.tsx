@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const API = "http://192.168.1.13:5000/api";
+const API = "http://192.168.1.5:5000/api";
 
 interface CertificateData {
     serialNumber: string;

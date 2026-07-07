@@ -103,6 +103,28 @@ Warm regards,
 ];
 
 const CertificateGenerator: React.FC = () => {
+  const Watermark = () => {
+  return (
+    <>
+      {/* Logo */}
+      <img
+        src="/images/android-chrome-192x192.png"
+        alt="watermark"
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          width: "320px",
+          transform: "translate(-50%, -50%)",
+          opacity: 0.05,
+          pointerEvents: "none",
+          userSelect: "none",
+          zIndex: 1,
+        }}
+      />
+    </>
+  );
+};
   const [qrCodes, setQrCodes] = useState<string[]>(['', '', '']); // index 0,1,2
 
   const [pagesData, setPagesData] = useState<CertificateFields[]>(defaultPages);
@@ -737,7 +759,7 @@ const CertificateGenerator: React.FC = () => {
               <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">CERTIFICATE 1 - ATTENDANCE CERTIFICATE</span>
               <section
                 ref={setPageRef(0)}
-                className="border border-slate-300 shadow-2xl bg-white flex flex-col"
+                className="relative border border-slate-300 shadow-2xl bg-white flex flex-col"
                 style={{
                   width: '794px',
                   height: '1123px',
@@ -748,6 +770,7 @@ const CertificateGenerator: React.FC = () => {
                   padding: '180px 90px 80px 90px'
                 }}
               >
+                <Watermark/>
                 <div className="text-right text-[16px] font-bold text-black mb-6">
                   {pagesData[0].date}
                 </div>
@@ -808,7 +831,7 @@ const CertificateGenerator: React.FC = () => {
               <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">CERTIFICATE 2 - PROJECT COMPLETION CERTIFICATE</span>
               <section
                 ref={setPageRef(1)}
-                className="border border-slate-300 shadow-2xl bg-white flex flex-col"
+                className="relative border border-slate-300 shadow-2xl bg-white flex flex-col"
                 style={{
                   width: '794px',
                   height: '1123px',
@@ -819,7 +842,8 @@ const CertificateGenerator: React.FC = () => {
                   padding: '180px 90px 80px 90px'
                 }}
               >
-                
+                <Watermark />
+
                 <div className="text-right text-[16px] font-bold text-black mb-6">
                   {pagesData[1].date}
                 </div>
@@ -890,7 +914,7 @@ const CertificateGenerator: React.FC = () => {
               <span className="bg-blue-900 text-white px-4 py-1 rounded-full text-xs font-bold">CERTIFICATE 3 - ACCEPTANCE CERTIFICATE</span>
               <section
                 ref={setPageRef(2)}
-                className="border border-slate-300 shadow-2xl bg-white flex flex-col"
+                className="relative border border-slate-300 shadow-2xl bg-white flex flex-col"
                 style={{
                   width: '794px',
                   height: '1123px',
@@ -901,6 +925,8 @@ const CertificateGenerator: React.FC = () => {
                   padding: '150px 80px 60px 80px'
                 }}
               >
+                <Watermark />
+
                 <div className="text-right text-[16px] font-bold text-black mb-6">
                   {pagesData[2].date}
                 </div>
