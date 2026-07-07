@@ -36,8 +36,8 @@ export type SavedCertificate = CertificateFields & {
   id?: number;
   createdAt?: string;
   updatedAt?: string;
-    serialNumber?: string;
-  qrCode?: string; 
+  serialNumber?: string;
+  qrCode?: string;
 };
 const defaultFields: CertificateFields = {
   studentName: "Ms SRIJANNADEVI V M",
@@ -104,27 +104,27 @@ Warm regards,
 
 const CertificateGenerator: React.FC = () => {
   const Watermark = () => {
-  return (
-    <>
-      {/* Logo */}
-      <img
-        src="/images/android-chrome-192x192.png"
-        alt="watermark"
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          width: "320px",
-          transform: "translate(-50%, -50%)",
-          opacity: 0.05,
-          pointerEvents: "none",
-          userSelect: "none",
-          zIndex: 1,
-        }}
-      />
-    </>
-  );
-};
+    return (
+      <>
+        {/* Logo */}
+        <img
+          src="/images/android-chrome-192x192.png"
+          alt="watermark"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "320px",
+            transform: "translate(-50%, -50%)",
+            opacity: 0.05,
+            pointerEvents: "none",
+            userSelect: "none",
+            zIndex: 1,
+          }}
+        />
+      </>
+    );
+  };
   const [qrCodes, setQrCodes] = useState<string[]>(['', '', '']); // index 0,1,2
 
   const [pagesData, setPagesData] = useState<CertificateFields[]>(defaultPages);
@@ -194,12 +194,12 @@ const CertificateGenerator: React.FC = () => {
   const handleSaveCertificate = async (index: number) => {
     const page = pagesData[index];
     const payload = {
-  ...page,
-  certificateTitle: page.certificateTitle
-    .trim()
-    .replace(/\s+/g, " ")
-    .toUpperCase(),
-};
+      ...page,
+      certificateTitle: page.certificateTitle
+        .trim()
+        .replace(/\s+/g, " ")
+        .toUpperCase(),
+    };
     const existingId = currentCertificateIds[index];
     const isEdit = existingId !== undefined;
     const method = isEdit ? "PUT" : "POST";
@@ -215,11 +215,11 @@ const CertificateGenerator: React.FC = () => {
       if (!res.ok) throw new Error("Save failed");
 
       const saved = await res.json();
-  setQrCodes((prev) => {
-    const copy = [...prev];
-    copy[index] = saved.qrCode || '';
-    return copy;
-  });
+      setQrCodes((prev) => {
+        const copy = [...prev];
+        copy[index] = saved.qrCode || '';
+        return copy;
+      });
       setSaveStatus(`${isEdit ? 'Updated' : 'Saved'} id=${saved.id}`);
 
       toast.success(
@@ -302,11 +302,11 @@ const CertificateGenerator: React.FC = () => {
     setSelectedPages((prev) => (prev.includes(pageIndex) ? prev : [...prev, pageIndex]));
     setLoadedCertificateId(c.id);
     setSaveStatus(`Loaded id=${c.id} into editor - Ready to Save`);
-  setQrCodes((prev) => {
-    const copy = [...prev];
-    copy[pageIndex] = c.qrCode || '';
-    return copy;
-  });
+    setQrCodes((prev) => {
+      const copy = [...prev];
+      copy[pageIndex] = c.qrCode || '';
+      return copy;
+    });
     // Scroll to the loaded certificate with smooth behavior
     setTimeout(() => {
       const pageRef = pageRefs.current[pageIndex];
@@ -314,7 +314,7 @@ const CertificateGenerator: React.FC = () => {
         pageRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 100);
-  
+
   };
 
   const loadAdminCertificates = async () => {
@@ -466,17 +466,17 @@ const CertificateGenerator: React.FC = () => {
             Certificate Title
           </label>
           <input
-  value={page.certificateTitle}
-  onChange={(e) => handleChange(index, "certificateTitle", e.target.value)}
-  onBlur={(e) =>
-    handleChange(
-      index,
-      "certificateTitle",
-      e.target.value.trim().replace(/\s+/g, " ").toUpperCase()
-    )
-  }
-  className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
-/>
+            value={page.certificateTitle}
+            onChange={(e) => handleChange(index, "certificateTitle", e.target.value)}
+            onBlur={(e) =>
+              handleChange(
+                index,
+                "certificateTitle",
+                e.target.value.trim().replace(/\s+/g, " ").toUpperCase()
+              )
+            }
+            className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          />
         </div>
 
         <div className="grid gap-3">
@@ -770,7 +770,7 @@ const CertificateGenerator: React.FC = () => {
                   padding: '180px 90px 80px 90px'
                 }}
               >
-                <Watermark/>
+                <Watermark />
                 <div className="text-right text-[16px] font-bold text-black mb-6">
                   {pagesData[0].date}
                 </div>
@@ -852,7 +852,7 @@ const CertificateGenerator: React.FC = () => {
                     {pagesData[1].certificateTitle}
                   </h2>
                 </div>
-                
+
                 <div>
                   <div
                     className="text-[18px] leading-[1.9] mb-8 text-justify text-black whitespace-pre-line"
@@ -876,25 +876,29 @@ const CertificateGenerator: React.FC = () => {
                     <p className="text-[15px] font-bold uppercase">{pagesData[1].signatoryTitle}</p>
                   </div>
                 </div>
-                 {/* QR code */}
-   {qrCodes[1] && (
-  <div
-    style={{
-      marginTop: "-140px",
-      marginLeft: "-3px",
-    }}
-  >
-    <img
-      src={qrCodes[1]}
-      alt="QR Code"
-      style={{
-        width: "140px",
-        height: "140px",
-      }}
-    />
-  </div>
-)}
-    
+                {/* QR code */}
+                {qrCodes[1] && (
+                  <div
+                    style={{
+                      marginTop: "-150px",
+                      marginLeft: "-3px",
+                    }}
+                  >
+                    <img
+                      src={qrCodes[1]}
+                      alt="QR Code"
+                      style={{
+                        width: "120px",
+                        height: "120px",
+                      }}
+                    />
+                    <p style={{ fontSize: '16px', textAlign: 'start', marginLeft: "5px", marginTop: '2px', color: '#000' }}>
+                      Scan QR to verify
+                    </p>
+
+                  </div>
+                )}
+
               </section>
             </div>
           </div>
