@@ -1,10 +1,9 @@
-
-
 import React, { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import AdminDashboard from '../admin/AdminDashboard';
 import toast, { Toaster } from 'react-hot-toast';
+
 export type CertificateFields = {
   studentName: string;
   collegeName: string;
@@ -39,6 +38,7 @@ export type SavedCertificate = CertificateFields & {
   serialNumber?: string;
   qrCode?: string;
 };
+
 const defaultFields: CertificateFields = {
   studentName: "Ms SRIJANNADEVI V M",
   collegeName: "Rani Anna Government College for Women, Tirunelveli",
@@ -215,11 +215,20 @@ const CertificateGenerator: React.FC = () => {
       if (!res.ok) throw new Error("Save failed");
 
       const saved = await res.json();
+
+      // ✅ Update QR code based on certificate type
       setQrCodes((prev) => {
         const copy = [...prev];
-        copy[index] = saved.qrCode || '';
+        if (index === 1) {
+          // ✅ PROJECT COMPLETION: show QR after save
+          copy[index] = saved.qrCode || '';
+        } else {
+          // ❌ ATTENDANCE & ACCEPTANCE: hide QR after save
+          copy[index] = '';
+        }
         return copy;
       });
+
       setSaveStatus(`${isEdit ? 'Updated' : 'Saved'} id=${saved.id}`);
 
       toast.success(
@@ -240,7 +249,6 @@ const CertificateGenerator: React.FC = () => {
     } catch (e) {
       console.error(e);
       setSaveStatus("Save failed");
-
       toast.error('❌ Save Failed!', {
         duration: 3000,
         position: 'top-right',
@@ -314,7 +322,6 @@ const CertificateGenerator: React.FC = () => {
         pageRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 100);
-
   };
 
   const loadAdminCertificates = async () => {
@@ -411,14 +418,12 @@ const CertificateGenerator: React.FC = () => {
         format: 'a4',
       });
 
-      // ... existing code in downloadSinglePDF
       const canvas = await html2canvas(page, {
-        scale: 1.5, // Scale 2-kku bathulaa 1.5 safe-aa irukkum
+        scale: 1.5,
         useCORS: true,
         backgroundColor: '#ffffff',
       });
 
-      // JPEG with 0.75 quality (Indha number-a kuraikka kuraikka size innum kuraiyum)
       const imgData = canvas.toDataURL('image/jpeg', 0.5);
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -812,6 +817,20 @@ const CertificateGenerator: React.FC = () => {
                     <p className="text-[15px] font-bold uppercase">{pagesData[0].signatoryTitle}</p>
                   </div>
                 </div>
+
+                {/* QR Code for Attendance Certificate */}
+                {qrCodes[0] && (
+                  <div style={{ marginTop: "-150px", marginLeft: "-3px" }}>
+                    <img
+                      src={qrCodes[0]}
+                      alt="QR Code"
+                      style={{ width: "120px", height: "120px" }}
+                    />
+                    <p style={{ fontSize: '16px', textAlign: 'start', marginLeft: "5px", marginTop: '2px', color: '#000' }}>
+                      Scan QR to verify
+                    </p>
+                  </div>
+                )}
               </section>
             </div>
           </div>
@@ -876,7 +895,7 @@ const CertificateGenerator: React.FC = () => {
                     <p className="text-[15px] font-bold uppercase">{pagesData[1].signatoryTitle}</p>
                   </div>
                 </div>
-                {/* QR code */}
+                {/* QR code for Project Completion */}
                 {qrCodes[1] && (
                   <div
                     style={{
@@ -895,10 +914,8 @@ const CertificateGenerator: React.FC = () => {
                     <p style={{ fontSize: '16px', textAlign: 'start', marginLeft: "5px", marginTop: '2px', color: '#000' }}>
                       Scan QR to verify
                     </p>
-
                   </div>
                 )}
-
               </section>
             </div>
           </div>
